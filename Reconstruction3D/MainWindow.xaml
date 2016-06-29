@@ -5,7 +5,7 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:vm="clr-namespace:Reconstruction3D.ViewModels"
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
-        Title="Reconstruction3D" Height="600" Width="1000"       
+        Title="3D Reconstruction" Height="500" Width="1200"       
         >
 
     <Controls:MetroWindow.Resources>
@@ -13,20 +13,55 @@
     </Controls:MetroWindow.Resources>
 
     <Grid DataContext="{StaticResource ResourceKey=Commands}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="125*"/>
+            <ColumnDefinition Width="173*"/>
+        </Grid.ColumnDefinitions>
 
-        <ToolBarPanel DockPanel.Dock="Top">
+        <Button Content="Open Image" Command="{Binding OpenFile}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
+        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="124,10,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
+
+        <Border Margin="10,40,10,96" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+            <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="329" VerticalAlignment="Top" Width="479"/>
+        </Border>
+
+        <Button Content="Confirm Vertices / Set Face" Command="{Binding VerticesToFace}" HorizontalAlignment="Left" Margin="158,378,0,0" VerticalAlignment="Top" Width="182" Grid.Column="0" Height="25"/>
+
+        <ToolBarPanel Grid.Column="1" Grid.ColumnSpan="1">
             <ToolBar>
-                <Label Target="{Binding ElementName=comboRenderMode}">Render Mode</Label>
+                <Label Target="{Binding ElementName=comboRenderMode}" Content="Render Mode"/>
                 <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}" Width="140"/>
                 <CheckBox IsChecked="{Binding ToonShader}" Content="Use Toon Shader" />
             </ToolBar>
         </ToolBarPanel>
 
-        <Button Content="Open File" Command="{Binding OpenFile}" HorizontalAlignment="Left" Margin="33,33,0,0" VerticalAlignment="Top" Width="75" Grid.Column="0" Height="25"/>
-        <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="169" Margin="33,88,0,0" VerticalAlignment="Top" Width="249" Grid.Column="0"/>
+        <CheckBox IsChecked="{Binding EditMode}" Content="Edit Mode" Grid.Column="1" HorizontalAlignment="Left" Margin="576,44,0,0" VerticalAlignment="Top" Height="18" Width="79"/>
 
-        <sharpGL:OpenGLControl OpenGLInitialized="Init" OpenGLDraw="Draw" Resized="Resize" Margin="377,88,0,80" RenderContextType="FBO"/>
+        <Label Content="Axis" HorizontalAlignment="Left" Margin="559,74,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <Label Content="x" HorizontalAlignment="Left" Margin="603,74,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <Label Content="y" HorizontalAlignment="Left" Margin="635,74,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <Label Content="z" HorizontalAlignment="Left" Margin="667,74,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+
+        <Label Content="Translate" HorizontalAlignment="Left" Margin="533,100,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <TextBox Grid.Column="1" Text="{Binding TranslateX}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="595,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+        <TextBox Grid.Column="1" Text="{Binding TranslateY}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="627,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
+        <TextBox Grid.Column="1" Text="{Binding TranslateZ}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="660,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding TranslateX}" IsEnabled="{Binding EditMode}" Margin="595,126,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding TranslateY}" IsEnabled="{Binding EditMode}" Margin="628,126,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding TranslateZ}" IsEnabled="{Binding EditMode}" Margin="660,126,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
+
+        <Label Content="Scale" HorizontalAlignment="Left" Margin="553,148,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <TextBox Grid.Column="1" Text="{Binding ScaleX}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="595,148,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+        <TextBox Grid.Column="1" Text="{Binding ScaleY}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="627,148,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
+        <TextBox Grid.Column="1" Text="{Binding ScaleZ}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="660,148,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding ScaleX}" IsEnabled="{Binding EditMode}" Margin="595,174,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding ScaleY}" IsEnabled="{Binding EditMode}" Margin="628,174,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding ScaleZ}" IsEnabled="{Binding EditMode}" Margin="660,174,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
+
+        <sharpGL:OpenGLControl OpenGLInitialized="Init" OpenGLDraw="Draw" Resized="Resize" Margin="0,40,164,96" RenderContextType="FBO" Grid.Column="1"/>
+        <Button Content="Undo" Command="{Binding Undo}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25"/>
+        <Button Content="Redo" Command="{Binding Redo}" HorizontalAlignment="Left" Margin="85,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25"/>
+        <Button Content="Confirm Faces / Set Mesh" Command="{Binding FacesToMesh}" HorizontalAlignment="Left" Margin="160,378,0,0" VerticalAlignment="Top" Width="182" Grid.Column="1" Height="25"/>
 
     </Grid>
-
 </Controls:MetroWindow>
