@@ -13,26 +13,19 @@
     </Controls:MetroWindow.Resources>
 
     <Grid DataContext="{StaticResource ResourceKey=Commands}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="169*"/>
-            <ColumnDefinition Width="327*"/>
-        </Grid.ColumnDefinitions>
 
         <ToolBarPanel DockPanel.Dock="Top">
             <ToolBar>
                 <Label Target="{Binding ElementName=comboRenderMode}">Render Mode</Label>
-                <ComboBox x:Name="comboRenderMode" SelectedIndex="0" Width="140">
-                    <ComboBoxItem>Retained Mode</ComboBoxItem>
-                    <ComboBoxItem>Immediate Mode</ComboBoxItem>
-                </ComboBox>
-                <CheckBox x:Name="checkBoxUseToonShader" Content="Use Toon Shader" />
+                <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}" Width="140"/>
+                <CheckBox IsChecked="{Binding ToonShader}" Content="Use Toon Shader" />
             </ToolBar>
         </ToolBarPanel>
 
         <Button Content="Open File" Command="{Binding OpenFile}" HorizontalAlignment="Left" Margin="33,33,0,0" VerticalAlignment="Top" Width="75" Grid.Column="0" Height="25"/>
         <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="169" Margin="33,88,0,0" VerticalAlignment="Top" Width="249" Grid.Column="0"/>
 
-        <sharpGL:OpenGLControl OpenGLInitialized="Init" OpenGLDraw="Draw" Resized="Resize" Grid.Column="1" Margin="0,88,42,80" RenderContextType="FBO"/>
+        <sharpGL:OpenGLControl OpenGLInitialized="Init" OpenGLDraw="Draw" Resized="Resize" Margin="377,88,0,80" RenderContextType="FBO"/>
 
     </Grid>
 
