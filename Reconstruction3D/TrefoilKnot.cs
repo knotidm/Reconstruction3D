@@ -9,46 +9,28 @@ namespace Reconstruction3D
     //  Original Source: http://prideout.net/blog/?p=22
     public class TrefoilKnot
     {
-        private VertexBufferArray vertexBufferArray;
-        private vec3[] vertices;
-        private vec3[] normals;
-        private ushort[] indices;
-
         private const uint slices = 128;
         private const uint stacks = 32;
-
-        public VertexBufferArray VertexBufferArray
-        {
-            get { return vertexBufferArray; }
-        }
-        public vec3[] Vertices
-        {
-            get { return vertices; }
-        }
-        public vec3[] Normals
-        {
-            get { return normals; }
-        }
-        public ushort[] Indices
-        {
-            get { return indices; }
-        }
+        public VertexBufferArray VertexBufferArray { get; set; }
+        public vec3[] Vertices { get; set; }
+        public vec3[] Normals { get; set; }
+        public ushort[] Indices { get; set; }
 
         public TrefoilKnot(OpenGL gl, uint vertexAttributeLocation, uint normalAttributeLocation)
         {
-            vertexBufferArray = new VertexBufferArray();
-            vertexBufferArray.Create(gl);
-            vertexBufferArray.Bind(gl);
+            VertexBufferArray = new VertexBufferArray();
+            VertexBufferArray.Create(gl);
+            VertexBufferArray.Bind(gl);
             CreateVertexNormalBuffer(gl, vertexAttributeLocation, normalAttributeLocation);
             CreateIndexBuffer(gl);
-            vertexBufferArray.Unbind(gl);
+            VertexBufferArray.Unbind(gl);
         }
         private void CreateVertexNormalBuffer(OpenGL gl, uint vertexAttributeLocation, uint normalAttributeLocation)
         {
             var vertexCount = slices * stacks;
 
-            vertices = new vec3[vertexCount];
-            normals = new vec3[vertexCount];
+            Vertices = new vec3[vertexCount];
+            Normals = new vec3[vertexCount];
 
             int count = 0;
 
@@ -64,8 +46,8 @@ namespace Reconstruction3D
                     vec3 u = EvaluateTrefoil(s + E, t) - p;
                     vec3 v = EvaluateTrefoil(s, t + E) - p;
                     vec3 n = glm.normalize(glm.cross(u, v));
-                    vertices[count] = p;
-                    normals[count] = n;
+                    Vertices[count] = p;
+                    Normals[count] = n;
                     count++;
                 }
             }
@@ -73,18 +55,18 @@ namespace Reconstruction3D
             var vertexBuffer = new VertexBuffer();
             vertexBuffer.Create(gl);
             vertexBuffer.Bind(gl);
-            vertexBuffer.SetData(gl, vertexAttributeLocation, vertices.SelectMany(v => v.to_array()).ToArray(), false, 3);
+            vertexBuffer.SetData(gl, vertexAttributeLocation, Vertices.SelectMany(v => v.to_array()).ToArray(), false, 3);
 
             var normalBuffer = new VertexBuffer();
             normalBuffer.Create(gl);
             normalBuffer.Bind(gl);
-            normalBuffer.SetData(gl, normalAttributeLocation, normals.SelectMany(v => v.to_array()).ToArray(), false, 3);
+            normalBuffer.SetData(gl, normalAttributeLocation, Normals.SelectMany(v => v.to_array()).ToArray(), false, 3);
         }
         private void CreateIndexBuffer(OpenGL gl)
         {
             const uint vertexCount = slices * stacks;
             const uint indexCount = vertexCount * 6;
-            indices = new ushort[indexCount];
+            Indices = new ushort[indexCount];
             int count = 0;
 
             ushort n = 0;
@@ -92,13 +74,13 @@ namespace Reconstruction3D
             {
                 for (ushort j = 0; j < stacks; j++)
                 {
-                    indices[count++] = (ushort)(n + j);
-                    indices[count++] = (ushort)(n + (j + 1) % stacks);
-                    indices[count++] = (ushort)((n + j + stacks) % vertexCount);
+                    Indices[count++] = (ushort)(n + j);
+                    Indices[count++] = (ushort)(n + (j + 1) % stacks);
+                    Indices[count++] = (ushort)((n + j + stacks) % vertexCount);
 
-                    indices[count++] = (ushort)((n + j + stacks) % vertexCount);
-                    indices[count++] = (ushort)((n + (j + 1) % stacks) % vertexCount);
-                    indices[count++] = (ushort)((n + (j + 1) % stacks + stacks) % vertexCount);
+                    Indices[count++] = (ushort)((n + j + stacks) % vertexCount);
+                    Indices[count++] = (ushort)((n + (j + 1) % stacks) % vertexCount);
+                    Indices[count++] = (ushort)((n + (j + 1) % stacks + stacks) % vertexCount);
                 }
 
                 n += (ushort)stacks;
@@ -107,7 +89,7 @@ namespace Reconstruction3D
             var indexBuffer = new IndexBuffer();
             indexBuffer.Create(gl);
             indexBuffer.Bind(gl);
-            indexBuffer.SetData(gl, indices);
+            indexBuffer.SetData(gl, Indices);
         }
         private static vec3 EvaluateTrefoil(float s, float t)
         {

@@ -117,7 +117,6 @@
     <Compile Include="Scene.cs" />
     <Compile Include="TrefoilKnot.cs" />
     <Compile Include="ViewModels\Commands.cs" />
-    <Compile Include="ViewModels\OpenGLWindow.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

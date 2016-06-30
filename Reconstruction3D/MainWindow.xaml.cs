@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using Reconstruction3D.ViewModels;
 using SharpGL;
 using SharpGL.SceneGraph;
 using SharpGL.SceneGraph.Core;
@@ -30,24 +31,10 @@ namespace Reconstruction3D
             theta += 0.01f;
             scene.CreateModelviewAndNormalMatrix(theta);
 
-            //  Clear the color and depth buffer.
             openGL.ClearColor(0f, 0f, 0f, 1f);
             openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT | OpenGL.GL_STENCIL_BUFFER_BIT);
 
-            //  Render the scene in either immediate or retained mode.
-            switch (comboRenderMode.SelectedIndex)
-            {
-                case 0:
-                    {
-                        scene.RenderRetainedMode(openGL, checkBoxUseToonShader.IsChecked.Value); break;
-                    }
-                case 1:
-                    {
-                        axies.Render(openGL, RenderMode.Design);
-                        scene.RenderImmediateMode(openGL);
-                        break;
-                    }
-            }
+            Commands.ChangeRenderMode(scene, openGL, axies);
 
 
             //openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
