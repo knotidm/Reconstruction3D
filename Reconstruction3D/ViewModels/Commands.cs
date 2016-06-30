@@ -18,13 +18,11 @@ namespace Reconstruction3D.ViewModels
         public bool EditMode { get; set; }
         public static string SelectedRenderMode { get; set; }
         public Visibility ImageInfo { get; set; }
-
         public Commands()
         {
             RenderModes = new ObservableCollection<string> { "Retained Mode", "Immediate Mode" };
             ImageInfo = Visibility.Hidden;
         }
-
         [OnCommand("OpenFile")]
         public void OpenFile()
         {
@@ -40,7 +38,26 @@ namespace Reconstruction3D.ViewModels
                     break;
             }
         }
+        [OnCommand("VerticesToFace")]
+        public void VerticesToFace()
+        {
 
+        }
+        [OnCommand("Undo")]
+        public void Undo()
+        {
+
+        }
+        [OnCommand("Redo")]
+        public void Redo()
+        {
+
+        }
+        [OnCommand("FacesToMesh")]
+        public void FacesToMesh()
+        {
+
+        }
         public static void ChangeRenderMode(Scene scene, OpenGL openGL, Axies axies)
         {
             switch (SelectedRenderMode)

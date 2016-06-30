@@ -29,7 +29,7 @@
 
         <ToolBarPanel Grid.Column="1" Grid.ColumnSpan="1">
             <ToolBar>
-                <Label Target="{Binding ElementName=comboRenderMode}" Content="Render Mode"/>
+                <Label Content="Render Mode"/>
                 <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}" Width="140"/>
                 <CheckBox IsChecked="{Binding ToonShader}" Content="Use Toon Shader" />
             </ToolBar>
