@@ -155,10 +155,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <EmbeddedResource  Include="Shaders\PerPixel.frag" />
-    <EmbeddedResource  Include="Shaders\PerPixel.vert" />
-    <EmbeddedResource  Include="Shaders\Toon.frag" />
-    <EmbeddedResource  Include="Shaders\Toon.vert" />
+    <EmbeddedResource Include="Shaders\PerPixel.frag" />
+    <EmbeddedResource Include="Shaders\PerPixel.vert" />
+    <EmbeddedResource Include="Shaders\Toon.frag" />
+    <EmbeddedResource Include="Shaders\Toon.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
