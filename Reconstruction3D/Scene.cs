@@ -3,13 +3,13 @@ using SharpGL;
 using SharpGL.Enumerations;
 using SharpGL.SceneGraph.Assets;
 using SharpGL.Shaders;
+using System;
 using System.Collections.Generic;
 
 namespace Reconstruction3D
 {
     public class Scene
     {
-
         private ShaderProgram matCap;
         private ShaderProgram shaderToon;
 
@@ -17,10 +17,13 @@ namespace Reconstruction3D
         private mat4 projectionMatrix = mat4.identity();
         private mat3 normalMatrix = mat3.identity();
 
-        //private TrefoilKnot trefoilKnot;
+        private TrefoilKnot trefoilKnot;
 
         const uint positionAttribute = 0;
         const uint normalAttribute = 1;
+
+        Texture texture = new Texture();
+
         public Scene(OpenGL openGL)
         {
             var attributeLocations = new Dictionary<uint, string>
@@ -34,8 +37,9 @@ namespace Reconstruction3D
 
             shaderToon = new ShaderProgram();
             shaderToon.Create(openGL, ManifestResourceLoader.LoadTextFile(@"Shaders\Toon.vert"), ManifestResourceLoader.LoadTextFile(@"Shaders\Toon.frag"), attributeLocations);
+            texture.Create(openGL, "D:/Visual Studio/Reconstruction3D/Reconstruction3D/matCap/generator7.jpg");
 
-            //trefoilKnot = new TrefoilKnot(openGL, positionAttribute, normalAttribute);
+            trefoilKnot = new TrefoilKnot(openGL, positionAttribute, normalAttribute);
         }
         public void CreateProjectionMatrix(OpenGL openGL, float screenWidth, float screenHeight)
         {
@@ -64,12 +68,14 @@ namespace Reconstruction3D
             openGL.PushAttrib(OpenGL.GL_POLYGON_BIT);
             openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
 
-            //var vertices = trefoilKnot.Vertices;
-            openGL.Begin(BeginMode.Triangles);
-            //foreach (var index in trefoilKnot.Indices)
-            //    openGL.Vertex(vertices[index].x, vertices[index].y, vertices[index].z);
-            Cube(openGL);
+            var vertices = trefoilKnot.Vertices;
 
+            openGL.Begin(BeginMode.Triangles);
+            foreach (var index in trefoilKnot.Indices)
+            {
+                openGL.Vertex(vertices[index].x, vertices[index].y, vertices[index].z);
+            }
+            Cube(openGL);
             openGL.End();
 
             openGL.PopAttrib();
@@ -77,6 +83,7 @@ namespace Reconstruction3D
         public void RenderRetainedMode(OpenGL openGL, bool useToonShader)
         {
             var shader = useToonShader ? shaderToon : matCap;
+            texture.Bind(openGL);
 
             shader.Bind(openGL);
 
@@ -91,9 +98,9 @@ namespace Reconstruction3D
             shader.SetUniformMatrix4(openGL, "Modelview", modelviewMatrix.to_array());
             shader.SetUniformMatrix3(openGL, "NormalMatrix", normalMatrix.to_array());
 
-            //trefoilKnot.VertexBufferArray.Bind(openGL);
-            Cube(openGL);
-            //openGL.DrawElements(OpenGL.GL_TRIANGLES, trefoilKnot.Indices.Length, OpenGL.GL_UNSIGNED_SHORT, IntPtr.Zero);
+            trefoilKnot.VertexBufferArray.Bind(openGL);
+            //Cube(openGL);
+            openGL.DrawElements(OpenGL.GL_TRIANGLES, trefoilKnot.Indices.Length, OpenGL.GL_UNSIGNED_SHORT, IntPtr.Zero);
 
             shader.Unbind(openGL);
         }
@@ -140,6 +147,6 @@ namespace Reconstruction3D
             openGL.End();
 
             openGL.Flush();
-        }        
+        }
     }
 }
