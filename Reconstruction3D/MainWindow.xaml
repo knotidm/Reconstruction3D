@@ -18,12 +18,14 @@
             <ColumnDefinition Width="173*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Content="Open Image" Command="{Binding OpenFile}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
+        <Button Content="Load Image" Command="{Binding LoadImage}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
         <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="124,10,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
 
         <Border Margin="10,40,10,96" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
             <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="329" VerticalAlignment="Top" Width="479"/>
         </Border>
+        
+        <Button Content="Load Texture" Command="{Binding LoadTexture}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
 
         <Button Content="Confirm Vertices / Set Face" Command="{Binding VerticesToFace}" HorizontalAlignment="Left" Margin="158,378,0,0" VerticalAlignment="Top" Width="182" Grid.Column="0" Height="25"/>
 
@@ -58,7 +60,7 @@
         <Slider HorizontalAlignment="Left" Value="{Binding ScaleY}" IsEnabled="{Binding EditMode}" Margin="628,174,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
         <Slider HorizontalAlignment="Left" Value="{Binding ScaleZ}" IsEnabled="{Binding EditMode}" Margin="660,174,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
 
-        <sharpGL:OpenGLControl OpenGLInitialized="Init" OpenGLDraw="Draw" Resized="Resize" Margin="0,40,164,96" RenderContextType="FBO" Grid.Column="1"/>
+        <sharpGL:OpenGLControl OpenGLInitialized="Init" OpenGLDraw="Draw" Margin="0,40,164,96" RenderContextType="FBO" Grid.Column="1"/>
         <Button Content="Undo" Command="{Binding Undo}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25"/>
         <Button Content="Redo" Command="{Binding Redo}" HorizontalAlignment="Left" Margin="85,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25"/>
         <Button Content="Confirm Faces / Set Mesh" Command="{Binding FacesToMesh}" HorizontalAlignment="Left" Margin="160,378,0,0" VerticalAlignment="Top" Width="182" Grid.Column="1" Height="25"/>

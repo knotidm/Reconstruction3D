@@ -2,133 +2,126 @@
 using Reconstruction3D.ViewModels;
 using SharpGL;
 using SharpGL.SceneGraph;
-using SharpGL.SceneGraph.Core;
+using SharpGL.SceneGraph.Assets;
 using SharpGL.SceneGraph.Primitives;
+using SharpGL.SceneGraph.Shaders;
 
 namespace Reconstruction3D
 {
     public partial class MainWindow : MetroWindow
     {
-        private readonly Axies axies = new Axies();
-        private float theta = 0;
-        private Scene scene;
-
-        float _rotatePyramid;
-        float _rquad;
-
+        //private readonly Axies axies = new Axies();
+        //private float theta = 0;
+        //private Scene scene;
+        Texture texture = new Texture();
+        float rtri = 0;
+        ShaderProgram matCap;
         public MainWindow()
         {
             InitializeComponent();
         }
         private void Init(object sender, OpenGLEventArgs args)
         {
-            //args.OpenGL.Enable(OpenGL.GL_DEPTH_TEST);
-            scene = new Scene(args.OpenGL);
+            var openGL = args.OpenGL;
+            openGL.Enable(OpenGL.GL_DEPTH_TEST);
+            openGL.Enable(OpenGL.GL_TEXTURE_2D);
+            //scene = new Scene(openGL);
+            texture.Create(openGL, "D:/Visual Studio/Reconstruction3D/Reconstruction3D/matCap/generator7.jpg");
+
+            matCap = new ShaderProgram();
+
+            //  Create a vertex shader.
+            VertexShader vertexShader = new VertexShader();
+            vertexShader.CreateInContext(openGL);
+            vertexShader.LoadSource("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Shaders/matCap.vert");
+
+            //  Create a fragment shader.
+            FragmentShader fragmentShader = new FragmentShader();
+            fragmentShader.CreateInContext(openGL);
+            fragmentShader.LoadSource("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Shaders/matCap.frag");
+
+            //  Compile them both.
+            vertexShader.Compile();
+            fragmentShader.Compile();
+
+            //  Build a program.
+            matCap.CreateInContext(openGL);
+
+            //  Attach the shaders.
+            matCap.AttachShader(vertexShader);
+            matCap.AttachShader(fragmentShader);
+            matCap.Link();
         }
         private void Draw(object sender, OpenGLEventArgs args)
         {
             var openGL = args.OpenGL;
-            theta += 0.01f;
-            scene.CreateModelviewAndNormalMatrix(theta);
+            //theta += 0.01f;
+            //scene.CreateModelviewAndNormalMatrix(theta);
 
-            openGL.ClearColor(0f, 0f, 0f, 1f);
-            openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT | OpenGL.GL_STENCIL_BUFFER_BIT);
+            //openGL.ClearColor(0f, 0f, 0f, 1f);
+            //openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT | OpenGL.GL_STENCIL_BUFFER_BIT);
 
-            Commands.ChangeRenderMode(scene, openGL, axies);
+            openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+            openGL.LoadIdentity();
+            openGL.Translate(0.0f, 0.0f, -6.0f);
 
+            openGL.Rotate(rtri, 0.0f, 1.0f, 0.0f);
 
-            //openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
-            //openGL.LoadIdentity();
+            //  Bind the texture.
+            texture.Bind(openGL);
 
-            //openGL.Translate(-1.5f, 0.0f, -6.0f);
-            //openGL.Rotate(_rotatePyramid, 0.0f, 1.0f, 0.0f);
+            //matCap.Push(openGL, null);
+            openGL.Begin(OpenGL.GL_QUADS);
 
-            //openGL.Begin(OpenGL.GL_TRIANGLES);
+            // Front Face
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, 1.0f);   // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f);  // Top Left Of The Texture and Quad
 
-            //openGL.Color(1.0f, 0.0f, 0.0f);
-            //openGL.Vertex(0.0f, 1.0f, 0.0f);
-            //openGL.Color(0.0f, 1.0f, 0.0f);
-            //openGL.Vertex(-1.0f, -1.0f, 1.0f);
-            //openGL.Color(0.0f, 0.0f, 1.0f);
-            //openGL.Vertex(1.0f, -1.0f, 1.0f);
+            // Back Face
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f);    // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f); // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Bottom Left Of The Texture and Quad
 
-            //openGL.Color(1.0f, 0.0f, 0.0f);
-            //openGL.Vertex(0.0f, 1.0f, 0.0f);
-            //openGL.Color(0.0f, 0.0f, 1.0f);
-            //openGL.Vertex(1.0f, -1.0f, 1.0f);
-            //openGL.Color(0.0f, 1.0f, 0.0f);
-            //openGL.Vertex(1.0f, -1.0f, -1.0f);
+            // Top Face
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f); // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, 1.0f, 1.0f);   // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Right Of The Texture and Quad
 
-            //openGL.Color(1.0f, 0.0f, 0.0f);
-            //openGL.Vertex(0.0f, 1.0f, 0.0f);
-            //openGL.Color(0.0f, 1.0f, 0.0f);
-            //openGL.Vertex(1.0f, -1.0f, -1.0f);
-            //openGL.Color(0.0f, 0.0f, 1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, -1.0f);
+            // Bottom Face
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f);    // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
 
-            //openGL.Color(1.0f, 0.0f, 0.0f);
-            //openGL.Vertex(0.0f, 1.0f, 0.0f);
-            //openGL.Color(0.0f, 0.0f, 1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, -1.0f);
-            //openGL.Color(0.0f, 1.0f, 0.0f);
-            //openGL.Vertex(-1.0f, -1.0f, 1.0f);
+            // Right face
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, 1.0f);   // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
 
-            //openGL.End();
+            // Left Face
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f);    // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f);  // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f);	// Top Left Of The Texture and Quad
+            openGL.End();
 
-            //openGL.LoadIdentity();
+            openGL.Flush();
+            //matCap.Pop(openGL, null);
 
-            //openGL.Translate(1.5f, 0.0f, -7.0f);
-            //openGL.Rotate(_rquad, 1.0f, 1.0f, 1.0f);
+            rtri += 1.0f;// 0.2f;						// Increase The Rotation Variable For The Triangle 
 
-            //openGL.Begin(OpenGL.GL_QUADS);
-
-            //openGL.Color(0.0f, 1.0f, 0.0f);
-            //openGL.Vertex(1.0f, 1.0f, -1.0f);
-            //openGL.Vertex(-1.0f, 1.0f, -1.0f);
-            //openGL.Vertex(-1.0f, 1.0f, 1.0f);
-            //openGL.Vertex(1.0f, 1.0f, 1.0f);
-
-            //openGL.Color(1.0f, 0.5f, 0.0f);
-            //openGL.Vertex(1.0f, -1.0f, 1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, 1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, -1.0f);
-            //openGL.Vertex(1.0f, -1.0f, -1.0f);
-
-            //openGL.Color(1.0f, 0.0f, 0.0f);
-            //openGL.Vertex(1.0f, 1.0f, 1.0f);
-            //openGL.Vertex(-1.0f, 1.0f, 1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, 1.0f);
-            //openGL.Vertex(1.0f, -1.0f, 1.0f);
-
-            //openGL.Color(1.0f, 1.0f, 0.0f);
-            //openGL.Vertex(1.0f, -1.0f, -1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, -1.0f);
-            //openGL.Vertex(-1.0f, 1.0f, -1.0f);
-            //openGL.Vertex(1.0f, 1.0f, -1.0f);
-
-            //openGL.Color(0.0f, 0.0f, 1.0f);
-            //openGL.Vertex(-1.0f, 1.0f, 1.0f);
-            //openGL.Vertex(-1.0f, 1.0f, -1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, -1.0f);
-            //openGL.Vertex(-1.0f, -1.0f, 1.0f);
-
-            //openGL.Color(1.0f, 0.0f, 1.0f);
-            //openGL.Vertex(1.0f, 1.0f, -1.0f);
-            //openGL.Vertex(1.0f, 1.0f, 1.0f);
-            //openGL.Vertex(1.0f, -1.0f, 1.0f);
-            //openGL.Vertex(1.0f, -1.0f, -1.0f);
-
-            //openGL.End();
-
-            //openGL.Flush();
-
-            //_rotatePyramid += 3.0f;
-            //_rquad -= 3.0f;
+            //Commands.ChangeRenderMode(scene, openGL, axies);
+            //Commands.LoadTexture(texture, openGL);
         }
 
-        private void Resize(object sender, OpenGLEventArgs args)
-        {
-            scene.CreateProjectionMatrix(args.OpenGL, (float)ActualWidth, (float)ActualHeight);
-        }
+        //private void Resize(object sender, OpenGLEventArgs args)
+        //{
+        //    //scene.CreateProjectionMatrix(args.OpenGL, (float)ActualWidth, (float)ActualHeight);
+        //}
     }
 }

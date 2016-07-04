@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using GlmNet;
 using SharpGL;
-using GlmNet;
 using SharpGL.VertexBuffers;
+using System;
+using System.Linq;
 
 namespace Reconstruction3D
 {
@@ -16,16 +16,16 @@ namespace Reconstruction3D
         public vec3[] Normals { get; set; }
         public ushort[] Indices { get; set; }
 
-        public TrefoilKnot(OpenGL gl, uint vertexAttributeLocation, uint normalAttributeLocation)
+        public TrefoilKnot(OpenGL openGL, uint vertexAttributeLocation, uint normalAttributeLocation)
         {
             VertexBufferArray = new VertexBufferArray();
-            VertexBufferArray.Create(gl);
-            VertexBufferArray.Bind(gl);
-            CreateVertexNormalBuffer(gl, vertexAttributeLocation, normalAttributeLocation);
-            CreateIndexBuffer(gl);
-            VertexBufferArray.Unbind(gl);
+            VertexBufferArray.Create(openGL);
+            VertexBufferArray.Bind(openGL);
+            CreateVertexNormalBuffer(openGL, vertexAttributeLocation, normalAttributeLocation);
+            CreateIndexBuffer(openGL);
+            VertexBufferArray.Unbind(openGL);
         }
-        private void CreateVertexNormalBuffer(OpenGL gl, uint vertexAttributeLocation, uint normalAttributeLocation)
+        private void CreateVertexNormalBuffer(OpenGL openGL, uint vertexAttributeLocation, uint normalAttributeLocation)
         {
             var vertexCount = slices * stacks;
 
@@ -53,16 +53,16 @@ namespace Reconstruction3D
             }
 
             var vertexBuffer = new VertexBuffer();
-            vertexBuffer.Create(gl);
-            vertexBuffer.Bind(gl);
-            vertexBuffer.SetData(gl, vertexAttributeLocation, Vertices.SelectMany(v => v.to_array()).ToArray(), false, 3);
+            vertexBuffer.Create(openGL);
+            vertexBuffer.Bind(openGL);
+            vertexBuffer.SetData(openGL, vertexAttributeLocation, Vertices.SelectMany(v => v.to_array()).ToArray(), false, 3);
 
             var normalBuffer = new VertexBuffer();
-            normalBuffer.Create(gl);
-            normalBuffer.Bind(gl);
-            normalBuffer.SetData(gl, normalAttributeLocation, Normals.SelectMany(v => v.to_array()).ToArray(), false, 3);
+            normalBuffer.Create(openGL);
+            normalBuffer.Bind(openGL);
+            normalBuffer.SetData(openGL, normalAttributeLocation, Normals.SelectMany(v => v.to_array()).ToArray(), false, 3);
         }
-        private void CreateIndexBuffer(OpenGL gl)
+        private void CreateIndexBuffer(OpenGL openGL)
         {
             const uint vertexCount = slices * stacks;
             const uint indexCount = vertexCount * 6;
@@ -87,9 +87,9 @@ namespace Reconstruction3D
             }
 
             var indexBuffer = new IndexBuffer();
-            indexBuffer.Create(gl);
-            indexBuffer.Bind(gl);
-            indexBuffer.SetData(gl, Indices);
+            indexBuffer.Create(openGL);
+            indexBuffer.Bind(openGL);
+            indexBuffer.SetData(openGL, Indices);
         }
         private static vec3 EvaluateTrefoil(float s, float t)
         {
