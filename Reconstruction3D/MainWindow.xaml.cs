@@ -46,20 +46,18 @@ namespace Reconstruction3D
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //if (e.ButtonState == MouseButtonState.Pressed)
-            //    currentPoint = e.;
-
+            if (e.ButtonState == MouseButtonState.Pressed)
+                currentPoint = e.GetPosition(canvas);
             Ellipse ellipse = new Ellipse();
-            ellipse.Fill = Brushes.Sienna;
-            ellipse.Width = 10;
-            ellipse.Height = 10;
-            ellipse.StrokeThickness = 2;
+            ellipse.Fill = Brushes.Black;
+            ellipse.Width = 4;
+            ellipse.Height = 4;
+            ellipse.StrokeThickness = 1;
 
             canvas.Children.Add(ellipse);
 
-            Canvas.SetLeft(ellipse, e.GetPosition(this).X);
-            Canvas.SetTop(ellipse, e.GetPosition(this).Y);
-
+            Canvas.SetLeft(ellipse, currentPoint.X);
+            Canvas.SetTop(ellipse, currentPoint.Y);
         }
 
         //private void Resize(object sender, OpenGLEventArgs args)
