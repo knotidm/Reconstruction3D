@@ -2,6 +2,7 @@
 using SharpGL;
 using SharpGL.Enumerations;
 using SharpGL.SceneGraph.Assets;
+using SharpGL.SceneGraph.Primitives;
 using SharpGL.Shaders;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,7 @@ namespace Reconstruction3D
             openGL.MultMatrix(modelviewMatrix.to_array());
 
             openGL.PushAttrib(OpenGL.GL_POLYGON_BIT);
+            
             openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
 
             var vertices = trefoilKnot.Vertices;
@@ -82,6 +84,10 @@ namespace Reconstruction3D
         }
         public void RenderRetainedMode(OpenGL openGL, bool useToonShader)
         {
+            openGL.MatrixMode(OpenGL.GL_MODELVIEW);
+            openGL.LoadIdentity();
+            openGL.MultMatrix(modelviewMatrix.to_array());
+
             var shader = useToonShader ? shaderToon : matCap;
             texture.Bind(openGL);
 
@@ -98,9 +104,11 @@ namespace Reconstruction3D
             shader.SetUniformMatrix4(openGL, "Modelview", modelviewMatrix.to_array());
             shader.SetUniformMatrix3(openGL, "NormalMatrix", normalMatrix.to_array());
 
-            trefoilKnot.VertexBufferArray.Bind(openGL);
+            //trefoilKnot.VertexBufferArray.Bind(openGL);
             //Cube(openGL);
-            openGL.DrawElements(OpenGL.GL_TRIANGLES, trefoilKnot.Indices.Length, OpenGL.GL_UNSIGNED_SHORT, IntPtr.Zero);
+            //openGL.DrawElements(OpenGL.GL_TRIANGLES, trefoilKnot.Indices.Length, OpenGL.GL_UNSIGNED_SHORT, IntPtr.Zero);
+
+            Other(openGL);
 
             shader.Unbind(openGL);
         }
@@ -111,12 +119,12 @@ namespace Reconstruction3D
 
             // Front Face
             openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, 1.0f);   // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f);  // Top Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, 1.0f); // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f); // Top Left Of The Texture and Quad
 
             // Back Face
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f);    // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f); // Bottom Right Of The Texture and Quad
             openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f); // Top Right Of The Texture and Quad
             openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Left Of The Texture and Quad
             openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Bottom Left Of The Texture and Quad
@@ -128,7 +136,7 @@ namespace Reconstruction3D
             openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Right Of The Texture and Quad
 
             // Bottom Face
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f);    // Top Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f); // Top Right Of The Texture and Quad
             openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Top Left Of The Texture and Quad
             openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
             openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
@@ -140,13 +148,22 @@ namespace Reconstruction3D
             openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
 
             // Left Face
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f);    // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f); // Bottom Left Of The Texture and Quad
             openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
             openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f);  // Top Right Of The Texture and Quad
             openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f);	// Top Left Of The Texture and Quad
             openGL.End();
 
             openGL.Flush();
+        }
+
+        public void Other(OpenGL openGL)
+        {
+            openGL.LoadIdentity();
+
+            Teapot tp = new Teapot();
+            tp.Draw(openGL, 14, 1, OpenGL.GL_FILL);
+
         }
     }
 }
