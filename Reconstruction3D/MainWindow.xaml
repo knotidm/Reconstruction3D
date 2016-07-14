@@ -18,18 +18,42 @@
             <ColumnDefinition Width="173*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Content="Load Image" Command="{Binding LoadImage}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
-        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="124,10,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
+        <Button Content="Load Image" Command="{Binding LoadImage}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="102,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
+        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="200,9,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
 
-        <Border Margin="10,40,10,96" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
-            <Canvas x:Name="canvas">
-                <Image Source="{Binding ImagePath}" MouseLeftButtonDown="Image_MouseLeftButtonDown" HorizontalAlignment="Left" Height="329" VerticalAlignment="Top" Width="479"/>
+        <Label Content="List of Faces" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
+        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="10,40,405,234">
+            <ListBox ItemsSource="{Binding Meshes}" SelectedItem="{Binding SelectedMesh}" HorizontalAlignment="Left" Height="194" VerticalAlignment="Top" Width="84">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Type}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+        <Button Content="'{'" Command="{Binding AddSelectedMesh}" HorizontalAlignment="Left" Margin="16,240,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
+        <Button Content="~" Command="{Binding DeleteSelectedMesh}" HorizontalAlignment="Left" Margin="61,240,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
+
+        <Border Margin="102,40,10,96" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+            <Canvas x:Name="canvas" >
+                <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="329" VerticalAlignment="Top" Width="386">
+                    <Image.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding ImageLeftDoubleClick}" CommandParameter="{Binding ElementName=canvas}" />
+                    </Image.InputBindings>
+                </Image>
             </Canvas>
         </Border>
-        
-        <Button Content="Load Texture" Command="{Binding LoadTexture}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
 
-        <Button Content="Confirm Vertices / Set Face" Command="{Binding VerticesToFace}" HorizontalAlignment="Left" Margin="158,378,0,0" VerticalAlignment="Top" Width="182" Grid.Column="0" Height="25"/>
+        <Label Content="Type" HorizontalAlignment="Left" Margin="111,378,0,0" VerticalAlignment="Top"/>
+        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedType}" HorizontalAlignment="Left" Margin="151,378,0,0" VerticalAlignment="Top" Width="120"/>
+
+        <Label Content="Name" HorizontalAlignment="Left" Margin="285,378,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="332,378,0,0" TextWrapping="Wrap" Text="{Binding NewFaceName}" VerticalAlignment="Top" Width="120"/>
+        
+        <Button Content="Add Face" Command="{Binding VerticesToFace}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="364,419,0,0" VerticalAlignment="Top" Width="60" Grid.Column="0" Height="25"/>
 
         <ToolBarPanel Grid.Column="1" Grid.ColumnSpan="1">
             <ToolBar>
@@ -63,10 +87,11 @@
         <Slider HorizontalAlignment="Left" Value="{Binding ScaleZ}" IsEnabled="{Binding EditMode}" Margin="660,174,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="17"/>
 
         <sharpGL:OpenGLControl OpenGLInitialized="Init" OpenGLDraw="Draw" RenderContextType="FBO" Margin="0,40,164,96"  Grid.Column="1"/>
-        <!--<sharpGL:SceneView></sharpGL:SceneView>-->
-        <Button Content="Undo" Command="{Binding Undo}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25"/>
-        <Button Content="Redo" Command="{Binding Redo}" HorizontalAlignment="Left" Margin="85,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25"/>
+
+        <Button Content="‹" Command="{Binding Undo}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
+        <Button Content="›" Command="{Binding Redo}" HorizontalAlignment="Left" Margin="85,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
         <Button Content="Confirm Faces / Set Mesh" Command="{Binding FacesToMesh}" HorizontalAlignment="Left" Margin="160,378,0,0" VerticalAlignment="Top" Width="182" Grid.Column="1" Height="25"/>
+
 
     </Grid>
 </Controls:MetroWindow>
