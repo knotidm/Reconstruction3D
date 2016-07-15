@@ -18,28 +18,24 @@
             <ColumnDefinition Width="173*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Content="Load Image" Command="{Binding LoadImage}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="102,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
-        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="200,9,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
+        <Button Content="Load Image" Command="{Binding LoadImage}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="151,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="25"/>
+        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="241,9,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
 
         <Label Content="List of Faces" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top"/>
-        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="10,40,405,234">
-            <ListBox ItemsSource="{Binding Meshes}" SelectedItem="{Binding SelectedMesh}" HorizontalAlignment="Left" Height="194" VerticalAlignment="Top" Width="84">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <TextBlock Text="{Binding Name}"/>
-                            <TextBlock Text="{Binding Type}"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="10,40,354,234">
+            <DataGrid  ItemsSource="{Binding Meshes}" SelectedItem="{Binding SelectedMesh}" HorizontalAlignment="Left" Height="194" VerticalAlignment="Top" Width="135" AutoGenerateColumns="False" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}" />
+                    <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" />
+                </DataGrid.Columns>
+            </DataGrid>
         </Border>
         <Button Content="'{'" Command="{Binding AddSelectedMesh}" HorizontalAlignment="Left" Margin="16,240,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
         <Button Content="~" Command="{Binding DeleteSelectedMesh}" HorizontalAlignment="Left" Margin="61,240,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
 
-        <Border Margin="102,40,10,96" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
+        <Border Margin="151,40,10,234" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
             <Canvas x:Name="canvas" >
-                <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="329" VerticalAlignment="Top" Width="386">
+                <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="193" VerticalAlignment="Top" Width="337">
                     <Image.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding ImageLeftDoubleClick}" CommandParameter="{Binding ElementName=canvas}" />
                     </Image.InputBindings>
@@ -47,13 +43,13 @@
             </Canvas>
         </Border>
 
-        <Label Content="Type" HorizontalAlignment="Left" Margin="111,378,0,0" VerticalAlignment="Top"/>
-        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedType}" HorizontalAlignment="Left" Margin="151,378,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Type" HorizontalAlignment="Left" Margin="159,242,0,0" VerticalAlignment="Top"/>
+        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedType}" HorizontalAlignment="Left" Margin="194,242,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.875,0.538"/>
 
-        <Label Content="Name" HorizontalAlignment="Left" Margin="285,378,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="332,378,0,0" TextWrapping="Wrap" Text="{Binding NewFaceName}" VerticalAlignment="Top" Width="120"/>
-        
-        <Button Content="Add Face" Command="{Binding VerticesToFace}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="364,419,0,0" VerticalAlignment="Top" Width="60" Grid.Column="0" Height="25"/>
+        <Label Content="Name" HorizontalAlignment="Left" Margin="314,242,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="356,242,0,0" TextWrapping="Wrap" Text="{Binding NewFaceName}" VerticalAlignment="Top" Width="120"/>
+
+        <Button Content="Add Face" Command="{Binding VerticesToFace}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="393,283,0,0" VerticalAlignment="Top" Width="60" Grid.Column="0" Height="25"/>
 
         <ToolBarPanel Grid.Column="1" Grid.ColumnSpan="1">
             <ToolBar>
