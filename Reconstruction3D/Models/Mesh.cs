@@ -3,6 +3,9 @@ using SharpGL;
 using SharpGL.SceneGraph.Assets;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Reconstruction3D.Models
 {
@@ -19,7 +22,7 @@ namespace Reconstruction3D.Models
             texture.Bind(Commands.openGL);
         }
 
-        public void Draw(OpenGL openGL)
+        public void DrawMesh(OpenGL openGL)
         {
             openGL.Begin(OpenGL.GL_QUADS);
 
@@ -61,6 +64,51 @@ namespace Reconstruction3D.Models
             openGL.End();
 
             openGL.Flush();
+        }
+
+        public void RedrawOnImage(Canvas canvas)
+        {
+            for (int i = 0; i < Points.Count; i++)
+            {
+                var ellipse = new Ellipse()
+                {
+                    Fill = Brushes.Black,
+                    Width = 4,
+                    Height = 4,
+                    StrokeThickness = 1
+                };
+
+                canvas.Children.Add(ellipse);
+
+                Canvas.SetLeft(ellipse, Points[i].X);
+                Canvas.SetTop(ellipse, Points[i].Y);
+
+                if (i < 3)
+                {
+                    var line = new Line()
+                    {
+                        Stroke = Brushes.Red,
+                        X1 = Points[i].X,
+                        Y1 = Points[i].Y,
+                        X2 = Points[i + 1].X,
+                        Y2 = Points[i + 1].Y
+                    };
+                    canvas.Children.Add(line);
+                }
+
+                if (i == 3)
+                {
+                    var line = new Line()
+                    {
+                        Stroke = Brushes.Red,
+                        X1 = Points[i].X,
+                        Y1 = Points[i].Y,
+                        X2 = Points[0].X,
+                        Y2 = Points[0].Y
+                    };
+                    canvas.Children.Add(line);
+                }
+            }
         }
     }
 }

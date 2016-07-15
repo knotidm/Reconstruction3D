@@ -26,9 +26,9 @@ namespace Reconstruction3D
             Commands.openGL.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
             Commands.openGL.LoadIdentity();
-            Commands.openGL.Translate(0.0f, 0.0f, -5.0f);
+            Commands.openGL.Translate(-3.0f, 2.0f, -5.0f);
 
-            //Commands.openGL.Rotate(rtri, 0.0f, 1.0f, 0.0f);
+            Commands.openGL.Rotate(180, 1.0f, 0.0f, 0.0f);
 
             Commands.ChangeRenderMode(Commands.openGL);
             rtri += 1.0f;

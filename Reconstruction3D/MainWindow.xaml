@@ -28,6 +28,11 @@
                     <DataGridTextColumn Header="Typ" Binding="{Binding Type}" />
                     <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" />
                 </DataGrid.Columns>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding RedrawOnImage}" CommandParameter="{Binding ElementName=canvas}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </DataGrid>
         </Border>
         <Button Content="'{'" Command="{Binding AddSelectedMesh}" HorizontalAlignment="Left" Margin="16,240,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
@@ -35,10 +40,12 @@
 
         <Border Margin="151,40,10,234" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
             <Canvas x:Name="canvas" >
-                <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="193" VerticalAlignment="Top" Width="337">
-                    <Image.InputBindings>
-                        <MouseBinding Gesture="LeftClick" Command="{Binding ImageLeftDoubleClick}" CommandParameter="{Binding ElementName=canvas}" />
-                    </Image.InputBindings>
+                <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="193" VerticalAlignment="Top" Width="337" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding ImageLeftClick}" CommandParameter="{Binding ElementName=canvas}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </Image>
             </Canvas>
         </Border>
@@ -87,7 +94,6 @@
         <Button Content="‹" Command="{Binding Undo}" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
         <Button Content="›" Command="{Binding Redo}" HorizontalAlignment="Left" Margin="85,378,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Height="25" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
         <Button Content="Confirm Faces / Set Mesh" Command="{Binding FacesToMesh}" HorizontalAlignment="Left" Margin="160,378,0,0" VerticalAlignment="Top" Width="182" Grid.Column="1" Height="25"/>
-
 
     </Grid>
 </Controls:MetroWindow>

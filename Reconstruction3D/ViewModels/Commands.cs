@@ -79,11 +79,10 @@ namespace Reconstruction3D.ViewModels
         {
             if (Points.Count == 4)
             {
-                var newMesh = new Mesh(openGL) { Name = NewFaceName, Type = SelectedType, Points = Points };
-                Meshes.Add(newMesh);
+                Meshes.Add(new Mesh(openGL) { Name = NewFaceName, Type = SelectedType, Points = Points });
                 i = -1;
 
-                //Points.Clear();
+                // Points.Clear();
                 canvas.Children.RemoveRange(1, 8);
             }
         }
@@ -102,6 +101,11 @@ namespace Reconstruction3D.ViewModels
         {
 
         }
+        [OnCommand("RedrawOnImage")]
+        public void RedrawOnImage(Canvas canvas)
+        {
+            SelectedMesh.RedrawOnImage(canvas);
+        }
         [OnCommand("AddSelectedMesh")]
         public void AddSelectedMesh()
         {
@@ -110,18 +114,30 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("DeleteSelectedMesh")]
         public void DeleteSelectedMesh()
         {
-            Meshes.Remove(SelectedMesh);         
+            Meshes.Remove(SelectedMesh);
         }
         // UNDONE : 4 wierzchołek za każdym razem na nowo jest ustawiany
         // TODO : Wycinanie tekstury z zaznaczonego obszaru ze zdjęcia
-        [OnCommand("ImageLeftDoubleClick")]
-        public void ImageLeftDoubleClick(Canvas canvas)
+        [OnCommand("ImageLeftClick")]
+        public void ImageLeftClick(Canvas canvas)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed && Points.Count < 4)
             {
-                CurrentPoint = Mouse.GetPosition(canvas) ;
-
+                CurrentPoint = Mouse.GetPosition(canvas);
                 Points.Add(CurrentPoint);
+
+                var ellipse = new Ellipse()
+                {
+                    Fill = Brushes.Black,
+                    Width = 4,
+                    Height = 4,
+                    StrokeThickness = 1
+                };
+
+                canvas.Children.Add(ellipse);
+
+                Canvas.SetLeft(ellipse, CurrentPoint.X);
+                Canvas.SetTop(ellipse, CurrentPoint.Y);
 
                 if (Points.Count > 1)
                 {
@@ -150,18 +166,8 @@ namespace Reconstruction3D.ViewModels
                     canvas.Children.Add(line);
                 }
             }
-
-            var ellipse = new Ellipse();
-            ellipse.Fill = Brushes.Black;
-            ellipse.Width = 4;
-            ellipse.Height = 4;
-            ellipse.StrokeThickness = 1;
-
-            canvas.Children.Add(ellipse);
-
-            Canvas.SetLeft(ellipse, CurrentPoint.X);
-            Canvas.SetTop(ellipse, CurrentPoint.Y);
         }
+
         public static void ChangeRenderMode(OpenGL openGL)
         {
             switch (SelectedRenderMode)
@@ -180,17 +186,17 @@ namespace Reconstruction3D.ViewModels
                     }
             }
         }
+
         public static void RenderRetainedMode(OpenGL openGL)
         {
-            SelectedMesh.Draw(openGL);
+            SelectedMesh.DrawMesh(openGL);
         }
+
         public static void RenderImmediateMode(OpenGL openGL)
         {
             openGL.PushAttrib(OpenGL.GL_POLYGON_BIT);
             openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
-
-            SelectedMesh.Draw(openGL);
-
+            SelectedMesh.DrawMesh(openGL);
             openGL.PopAttrib();
         }
         public static void LoadTexture(Texture texture, OpenGL openGL)
@@ -198,6 +204,5 @@ namespace Reconstruction3D.ViewModels
             texture.Destroy(openGL);
             texture.Create(openGL, TexturePath);
         }
-
     }
 }
