@@ -27,10 +27,10 @@ namespace Reconstruction3D.ViewModels
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedType { get; set; }
         public ObservableCollection<Mesh> Meshes { get; set; }
-        public Mesh SelectedMesh { get; set; }
+        public static Mesh SelectedMesh { get; set; }
         public string ImagePath { get; set; }
         public string NewFaceName { get; set; }
-        public static string TexturePath { get; set; } = "C:\\VISUAL STUDIO PROJECTS\\Reconstruction3D\\Reconstruction3D\\matCap\\Crate.bmp";
+        public static string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
         public static bool ToonShader { get; set; }
         public bool EditMode { get; set; }
         public static string SelectedRenderMode { get; set; }
@@ -48,7 +48,6 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("LoadImage")]
         public void LoadImage(Canvas canvas)
         {
-            //canvas.Children.Clear();
             var openFileDialog = new OpenFileDialog() { Filter = @"JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif" };
             var result = openFileDialog.ShowDialog();
             switch (result)
@@ -80,13 +79,11 @@ namespace Reconstruction3D.ViewModels
         {
             if (Points.Count == 4)
             {
-                Points.Clear();
-                //var items = canvas.Children.Count;
-                canvas.Children.RemoveRange(1, 8);
-
-                var newMesh = new Mesh(openGL) { Name = NewFaceName, Type = SelectedType, Points = Points };
-                Meshes.Add(newMesh);
+                Meshes.Add(new Mesh(openGL) { Name = NewFaceName, Type = SelectedType, Points = Points });
                 i = -1;
+
+                // Points.Clear();
+                canvas.Children.RemoveRange(1, 8);
             }
         }
         [OnCommand("Undo")]
@@ -104,6 +101,11 @@ namespace Reconstruction3D.ViewModels
         {
 
         }
+        [OnCommand("RedrawOnImage")]
+        public void RedrawOnImage(Canvas canvas)
+        {
+            SelectedMesh.RedrawOnImage(canvas);
+        }
         [OnCommand("AddSelectedMesh")]
         public void AddSelectedMesh()
         {
@@ -112,18 +114,30 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("DeleteSelectedMesh")]
         public void DeleteSelectedMesh()
         {
-            Meshes.Remove(SelectedMesh);         
+            Meshes.Remove(SelectedMesh);
         }
         // UNDONE : 4 wierzchołek za każdym razem na nowo jest ustawiany
         // TODO : Wycinanie tekstury z zaznaczonego obszaru ze zdjęcia
-        [OnCommand("ImageLeftDoubleClick")]
-        public void ImageLeftDoubleClick(Canvas canvas)
+        [OnCommand("ImageLeftClick")]
+        public void ImageLeftClick(Canvas canvas)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed && Points.Count < 4)
             {
                 CurrentPoint = Mouse.GetPosition(canvas);
-
                 Points.Add(CurrentPoint);
+
+                var ellipse = new Ellipse()
+                {
+                    Fill = Brushes.Black,
+                    Width = 4,
+                    Height = 4,
+                    StrokeThickness = 1
+                };
+
+                canvas.Children.Add(ellipse);
+
+                Canvas.SetLeft(ellipse, CurrentPoint.X);
+                Canvas.SetTop(ellipse, CurrentPoint.Y);
 
                 if (Points.Count > 1)
                 {
@@ -152,18 +166,8 @@ namespace Reconstruction3D.ViewModels
                     canvas.Children.Add(line);
                 }
             }
-
-            var ellipse = new Ellipse();
-            ellipse.Fill = Brushes.Black;
-            ellipse.Width = 4;
-            ellipse.Height = 4;
-            ellipse.StrokeThickness = 1;
-
-            canvas.Children.Add(ellipse);
-
-            Canvas.SetLeft(ellipse, CurrentPoint.X);
-            Canvas.SetTop(ellipse, CurrentPoint.Y);
         }
+
         public static void ChangeRenderMode(OpenGL openGL)
         {
             switch (SelectedRenderMode)
@@ -182,66 +186,23 @@ namespace Reconstruction3D.ViewModels
                     }
             }
         }
-        private static void RenderRetainedMode(OpenGL openGL)
+
+        public static void RenderRetainedMode(OpenGL openGL)
         {
-            Cube(openGL);
+            SelectedMesh.DrawMesh(openGL);
         }
-        private static void RenderImmediateMode(OpenGL openGL)
+
+        public static void RenderImmediateMode(OpenGL openGL)
         {
             openGL.PushAttrib(OpenGL.GL_POLYGON_BIT);
             openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
-
-            Cube(openGL);
+            SelectedMesh.DrawMesh(openGL);
             openGL.PopAttrib();
         }
         public static void LoadTexture(Texture texture, OpenGL openGL)
         {
             texture.Destroy(openGL);
             texture.Create(openGL, TexturePath);
-        }
-        // TODO : Zmapowanie wierzchołków ze zdjęcia do okna OpenGL
-        private static void Cube(OpenGL openGL)
-        {
-            openGL.Begin(OpenGL.GL_QUADS);
-
-            // Front Face
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, 1.0f); // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f); // Top Left Of The Texture and Quad
-
-            // Back Face
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f); // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Bottom Left Of The Texture and Quad
-
-            // Top Face
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f); // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, 1.0f, 1.0f);   // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Right Of The Texture and Quad
-
-            // Bottom Face
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f); // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
-
-            // Right face
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, -1.0f); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, -1.0f);  // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(1.0f, 1.0f, 1.0f);   // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Left Of The Texture and Quad
-
-            // Left Face
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, -1.0f); // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, 1.0f);  // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(-1.0f, 1.0f, -1.0f);	// Top Left Of The Texture and Quad
-            openGL.End();
-
-            openGL.Flush();
         }
     }
 }
