@@ -30,7 +30,7 @@ namespace Reconstruction3D.ViewModels
         public Mesh SelectedMesh { get; set; }
         public string ImagePath { get; set; }
         public string NewFaceName { get; set; }
-        public static string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/matCap/Crate.bmp";
+        public static string TexturePath { get; set; } = "C:\\VISUAL STUDIO PROJECTS\\Reconstruction3D\\Reconstruction3D\\matCap\\Crate.bmp";
         public static bool ToonShader { get; set; }
         public bool EditMode { get; set; }
         public static string SelectedRenderMode { get; set; }
