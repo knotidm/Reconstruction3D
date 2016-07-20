@@ -4,6 +4,7 @@ namespace Reconstruction3D.ViewModels
 {
     public class CreateTexture
     {
+        // TODO: Tekstury muszą się tworzyć jako nowe kolejene pliki każdorazwowo
         public static Bitmap CropImage(System.Windows.Point location, string sourcePath, double width, double height)
         {
             Rectangle section = new Rectangle((int)location.X, (int)location.Y, (int)width, (int)height);
@@ -15,7 +16,6 @@ namespace Reconstruction3D.ViewModels
             // Draw the given area (section) of the source image
             // at location 0,0 on the empty bitmap (bmp)
             g.DrawImage(new Bitmap(sourcePath), (float)location.X, (float)location.Y, section, GraphicsUnit.Pixel);
-
             return bmp;
         }
 

@@ -9,6 +9,7 @@ using System.Windows.Shapes;
 
 namespace Reconstruction3D.Models
 {
+    // TODO: Ustawianie głębii
     public class Mesh
     {
         public string Name { get; set; }

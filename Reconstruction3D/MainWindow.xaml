@@ -62,7 +62,7 @@
             <ToolBar>
                 <Label Content="Render Mode"/>
                 <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}" Width="140"/>
-                <CheckBox IsChecked="{Binding ToonShader}" Content="Use Toon Shader" />
+                <CheckBox IsChecked="{Binding DrawAll}" Content="Draw All Shapes" />
             </ToolBar>
         </ToolBarPanel>
 
