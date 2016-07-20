@@ -119,6 +119,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Mesh.cs" />
     <Compile Include="ViewModels\Commands.cs" />
+    <Compile Include="ViewModels\CreateTexture.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

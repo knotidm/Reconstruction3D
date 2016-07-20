@@ -16,10 +16,13 @@ namespace Reconstruction3D.Models
         public List<Point> Points { get; set; }
 
         Texture texture = new Texture();
-        public Mesh(OpenGL openGL)
+        public Mesh(OpenGL openGL, string name, string type, List<Point> points)
         {
             texture.Create(Commands.openGL, Commands.TexturePath);
             texture.Bind(Commands.openGL);
+            Name = name;
+            Type = type;
+            Points = points;
         }
 
         public void DrawMesh(OpenGL openGL)

@@ -5,15 +5,15 @@ using SharpGL.SceneGraph.Assets;
 using SharpGL.SceneGraph.Core;
 using SharpGL.SceneGraph.Primitives;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Forms;
 using SharpGL.Enumerations;
 using System.Collections.Generic;
 using System.Windows.Input;
-using System.Windows.Shapes;
-using System.Windows.Media;
 using System.Windows.Controls;
 using Reconstruction3D.Models;
+using System.Windows;
+using System.Windows.Shapes;
+using System.Windows.Media;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -36,14 +36,14 @@ namespace Reconstruction3D.ViewModels
         public static string SelectedRenderMode { get; set; }
         public Visibility ImageInfo { get; set; }
         public Point CurrentPoint { get; set; }
-        public List<Point> Points { get; set; }
+        public List<Point> PointsToAdd { get; set; }
         public Commands()
         {
             RenderModes = new ObservableCollection<string> { "Retained Mode", "Immediate Mode" };
             MeshTypes = new ObservableCollection<string> { "Tylne Oparcie", "Boczne Oparcie", "Siedzenie" };
             Meshes = new ObservableCollection<Mesh>();
             ImageInfo = Visibility.Hidden;
-            Points = new List<Point>();
+            PointsToAdd = new List<Point>();
         }
         [OnCommand("LoadImage")]
         public void LoadImage(Canvas canvas)
@@ -77,13 +77,10 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("VerticesToFace")]
         public void VerticesToFace(Canvas canvas)
         {
-            if (Points.Count == 4)
+            if (PointsToAdd.Count == 4)
             {
-                Meshes.Add(new Mesh(openGL) { Name = NewFaceName, Type = SelectedType, Points = Points });
+                Meshes.Add(new Mesh(openGL, NewFaceName, SelectedType, new List<Point>(PointsToAdd)));
                 i = -1;
-
-                // Points.Clear();
-                canvas.Children.RemoveRange(1, 8);
             }
         }
         [OnCommand("Undo")]
@@ -104,7 +101,16 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("RedrawOnImage")]
         public void RedrawOnImage(Canvas canvas)
         {
-            SelectedMesh.RedrawOnImage(canvas);
+            try
+            {
+                canvas.Children.RemoveRange(1, 9);
+                SelectedMesh.RedrawOnImage(canvas);
+                i = -1;
+            }
+            catch (System.Exception)
+            {
+
+            }
         }
         [OnCommand("AddSelectedMesh")]
         public void AddSelectedMesh()
@@ -121,10 +127,16 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("ImageLeftClick")]
         public void ImageLeftClick(Canvas canvas)
         {
-            if (Mouse.LeftButton == MouseButtonState.Pressed && Points.Count < 4)
+            if (canvas.Children.Count == 9)
+            {
+                canvas.Children.RemoveRange(1, 9);
+                PointsToAdd.Clear();
+            }
+
+            if (Mouse.LeftButton == MouseButtonState.Pressed && PointsToAdd.Count < 4)
             {
                 CurrentPoint = Mouse.GetPosition(canvas);
-                Points.Add(CurrentPoint);
+                PointsToAdd.Add(CurrentPoint);
 
                 var ellipse = new Ellipse()
                 {
@@ -139,31 +151,34 @@ namespace Reconstruction3D.ViewModels
                 Canvas.SetLeft(ellipse, CurrentPoint.X);
                 Canvas.SetTop(ellipse, CurrentPoint.Y);
 
-                if (Points.Count > 1)
+                if (PointsToAdd.Count > 1)
                 {
                     i++;
                     var line = new Line()
                     {
                         Stroke = Brushes.Red,
-                        X1 = Points[i].X,
-                        Y1 = Points[i].Y,
-                        X2 = Points[Points.Count - 1].X,
-                        Y2 = Points[Points.Count - 1].Y
+                        X1 = PointsToAdd[i].X,
+                        Y1 = PointsToAdd[i].Y,
+                        X2 = PointsToAdd[PointsToAdd.Count - 1].X,
+                        Y2 = PointsToAdd[PointsToAdd.Count - 1].Y
                     };
                     canvas.Children.Add(line);
                 }
 
-                if (Points.Count == 4)
+                if (PointsToAdd.Count == 4)
                 {
                     var line = new Line()
                     {
                         Stroke = Brushes.Red,
-                        X1 = Points[Points.Count - 1].X,
-                        Y1 = Points[Points.Count - 1].Y,
-                        X2 = Points[0].X,
-                        Y2 = Points[0].Y
+                        X1 = PointsToAdd[PointsToAdd.Count - 1].X,
+                        Y1 = PointsToAdd[PointsToAdd.Count - 1].Y,
+                        X2 = PointsToAdd[0].X,
+                        Y2 = PointsToAdd[0].Y
                     };
+
                     canvas.Children.Add(line);
+
+                    CreateTexture.CropImage(CurrentPoint, ImagePath);
                 }
             }
         }
@@ -189,15 +204,20 @@ namespace Reconstruction3D.ViewModels
 
         public static void RenderRetainedMode(OpenGL openGL)
         {
-            SelectedMesh.DrawMesh(openGL);
+            if (SelectedMesh != null)
+            {
+                SelectedMesh.DrawMesh(openGL);
+            }
         }
-
         public static void RenderImmediateMode(OpenGL openGL)
         {
-            openGL.PushAttrib(OpenGL.GL_POLYGON_BIT);
-            openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
-            SelectedMesh.DrawMesh(openGL);
-            openGL.PopAttrib();
+            if (SelectedMesh != null)
+            {
+                openGL.PushAttrib(OpenGL.GL_POLYGON_BIT);
+                openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
+                SelectedMesh.DrawMesh(openGL);
+                openGL.PopAttrib();
+            }
         }
         public static void LoadTexture(Texture texture, OpenGL openGL)
         {
