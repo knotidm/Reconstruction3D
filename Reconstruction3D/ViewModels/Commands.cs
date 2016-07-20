@@ -17,6 +17,8 @@ using System.Windows.Media;
 
 namespace Reconstruction3D.ViewModels
 {
+
+    //TODO: Undo / Rendo Frmaweork
     [ImplementPropertyChanged]
     public class Commands
     {
@@ -79,7 +81,7 @@ namespace Reconstruction3D.ViewModels
         {
             if (PointsToAdd.Count == 4)
             {
-                Meshes.Add(new Mesh(openGL, NewFaceName, SelectedType, new List<Point>(PointsToAdd)));
+                Meshes.Add(new Mesh(openGL, NewFaceName, SelectedType, new List<Point>(PointsToAdd), TexturePath));
                 i = -1;
             }
         }
@@ -123,7 +125,7 @@ namespace Reconstruction3D.ViewModels
             Meshes.Remove(SelectedMesh);
         }
         // UNDONE : 4 wierzchołek za każdym razem na nowo jest ustawiany
-        // TODO : Wycinanie tekstury z zaznaczonego obszaru ze zdjęcia
+        // UNDONE : Wycinanie tekstury z zaznaczonego obszaru ze zdjęcia
         [OnCommand("ImageLeftClick")]
         public void ImageLeftClick(Canvas canvas)
         {
@@ -178,7 +180,8 @@ namespace Reconstruction3D.ViewModels
 
                     canvas.Children.Add(line);
 
-                    CreateTexture.CropImage(CurrentPoint, ImagePath);
+                    var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath, PointsToAdd[1].X - PointsToAdd[0].X, PointsToAdd[1].Y - PointsToAdd[2].Y);
+                    bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp");
                 }
             }
         }

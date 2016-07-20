@@ -4,9 +4,9 @@ namespace Reconstruction3D.ViewModels
 {
     public class CreateTexture
     {
-        public static Bitmap CropImage(System.Windows.Point location, string sourcePath)
+        public static Bitmap CropImage(System.Windows.Point location, string sourcePath, double width, double height)
         {
-            Rectangle section = new Rectangle((int)location.X, (int)location.Y, 150, 150);
+            Rectangle section = new Rectangle((int)location.X, (int)location.Y, (int)width, (int)height);
             // An empty bitmap which will hold the cropped image
             Bitmap bmp = new Bitmap(section.Width, section.Height);
 
