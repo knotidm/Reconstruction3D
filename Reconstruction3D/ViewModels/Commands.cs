@@ -1,7 +1,6 @@
 ﻿using Commander;
 using PropertyChanged;
 using SharpGL;
-using SharpGL.SceneGraph.Assets;
 using SharpGL.SceneGraph.Core;
 using SharpGL.SceneGraph.Primitives;
 using System.Collections.ObjectModel;
@@ -14,6 +13,7 @@ using Reconstruction3D.Models;
 using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using UndoRedoFramework.Core;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -22,31 +22,61 @@ namespace Reconstruction3D.ViewModels
     [ImplementPropertyChanged]
     public class Commands
     {
-        public static OpenGL openGL { get; set; }
-
         int i = -1;
-        public ObservableCollection<string> RenderModes { get; set; }
-        public ObservableCollection<string> MeshTypes { get; set; }
-        public string SelectedType { get; set; }
-        public static ObservableCollection<Mesh> Meshes { get; set; }
-        public static Mesh SelectedMesh { get; set; }
+
+        private UndoRedoContext undoRedoContext;
+
+        #region Image Properties
+
         public string ImagePath { get; set; }
-        public string NewFaceName { get; set; }
-        public static string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
-        public static bool DrawAll { get; set; }
-        public bool EditMode { get; set; }
-        public static string SelectedRenderMode { get; set; }
         public Visibility ImageInfo { get; set; }
         public Point CurrentPoint { get; set; }
         public List<Point> PointsToAdd { get; set; }
+        public static ObservableCollection<Mesh> Meshes { get; set; }
+        public static Mesh SelectedMesh { get; set; }
+        public string MeshName { get; set; }
+        public ObservableCollection<string> MeshTypes { get; set; }
+        public string SelectedMeshType { get; set; }
+        public string TexturePath { get; set; } = "D:\\Visual Studio\\Reconstruction3D\\Reconstruction3D\\Textures\\Crate.bmp";
+
+        #endregion
+
+        #region Mesh Properties
+
+        public static OpenGL openGL { get; set; }
+        public ObservableCollection<string> RenderModes { get; set; }
+        public static string SelectedRenderMode { get; set; }
+        public static bool DrawAll { get; set; }
+        public bool EditMode { get; set; }
+
+        #endregion
+
         public Commands()
         {
+            undoRedoContext = new UndoRedoContext();
             RenderModes = new ObservableCollection<string> { "Retained Mode", "Immediate Mode" };
             MeshTypes = new ObservableCollection<string> { "Tylne Oparcie", "Boczne Oparcie", "Siedzenie" };
             Meshes = new ObservableCollection<Mesh>();
             ImageInfo = Visibility.Hidden;
             PointsToAdd = new List<Point>();
         }
+
+        #region Undo / Redo Commands
+
+        [OnCommand("Undo")]
+        public ICommand Undo()
+        {
+            return undoRedoContext.GetUndoCommand();
+        }
+        [OnCommand("Redo")]
+        public ICommand Redo()
+        {
+            return undoRedoContext.GetRedoCommand();
+        }
+        #endregion
+
+        #region Image Commands
+
         [OnCommand("LoadImage")]
         public void LoadImage(Canvas canvas)
         {
@@ -62,73 +92,10 @@ namespace Reconstruction3D.ViewModels
                     break;
             }
         }
-        [OnCommand("LoadTexture")]
-        public void LoadTexture()
-        {
-            var openFileDialog = new OpenFileDialog() { Filter = @"JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif" };
-            var result = openFileDialog.ShowDialog();
-            switch (result)
-            {
-                case DialogResult.OK:
-                    TexturePath = openFileDialog.FileName;
-                    break;
-                case DialogResult.Cancel:
-                    break;
-            }
-        }
-        [OnCommand("VerticesToFace")]
-        public void VerticesToFace(Canvas canvas)
-        {
-            if (PointsToAdd.Count == 4)
-            {
-                Meshes.Add(new Mesh(openGL, NewFaceName, SelectedType, new List<Point>(PointsToAdd), TexturePath));
-                i = -1;
-            }
-        }
-        [OnCommand("Undo")]
-        public void Undo()
-        {
-
-        }
-        [OnCommand("Redo")]
-        public void Redo()
-        {
-
-        }
-        [OnCommand("FacesToMesh")]
-        public void FacesToMesh()
-        {
-
-        }
-        [OnCommand("RedrawOnImage")]
-        public void RedrawOnImage(Canvas canvas)
-        {
-            try
-            {
-                canvas.Children.RemoveRange(1, 9);
-                SelectedMesh.RedrawOnImage(canvas);
-                i = -1;
-            }
-            catch (System.Exception)
-            {
-
-            }
-        }
-        [OnCommand("AddSelectedMesh")]
-        public void AddSelectedMesh()
-        {
-            Meshes.Add(SelectedMesh);
-        }
-        [OnCommand("DeleteSelectedMesh")]
-        public void DeleteSelectedMesh()
-        {
-            Meshes.Remove(SelectedMesh);
-        }
-
 
         // UNDONE : Wycinanie tekstury z zaznaczonego obszaru ze zdjęcia
-        [OnCommand("ImageLeftClick")]
-        public void ImageLeftClick(Canvas canvas)
+        [OnCommand("LeftClickOnImage")]
+        public void LeftClickOnImage(Canvas canvas)
         {
             if (canvas.Children.Count == 9)
             {
@@ -188,6 +155,56 @@ namespace Reconstruction3D.ViewModels
             }
         }
 
+        [OnCommand("CreateMesh")]
+        public void CreateMesh(Canvas canvas)
+        {
+            if (PointsToAdd.Count == 4)
+            {
+                Meshes.Add(new Mesh(openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), TexturePath));
+                i = -1;
+            }
+        }
+
+        [OnCommand("RedrawOnImage")]
+        public void RedrawOnImage(Canvas canvas)
+        {
+            try
+            {
+                canvas.Children.RemoveRange(1, 9);
+                SelectedMesh.RedrawOnImage(canvas);
+                i = -1;
+            }
+            catch (System.Exception)
+            {
+
+            }
+        }
+
+        [OnCommand("AddSelectedMesh")]
+        public void AddSelectedMesh()
+        {
+            Meshes.Add(SelectedMesh);
+        }
+
+        [OnCommand("DeleteSelectedMesh")]
+        public void DeleteSelectedMesh()
+        {
+            Meshes.Remove(SelectedMesh);
+        }
+
+        #endregion
+
+        #region Mesh Commands
+
+        [OnCommand("FacesToMesh")]
+        public void FacesToMesh()
+        {
+
+        }
+
+        #endregion
+
+        #region Methods
         public static void ChangeRenderMode(OpenGL openGL)
         {
             switch (SelectedRenderMode)
@@ -206,7 +223,6 @@ namespace Reconstruction3D.ViewModels
                     }
             }
         }
-
         public static void RenderRetainedMode(OpenGL openGL)
         {
             if (DrawAll == true)
@@ -245,10 +261,6 @@ namespace Reconstruction3D.ViewModels
             }
             openGL.PopAttrib();
         }
-        public static void LoadTexture(Texture texture, OpenGL openGL)
-        {
-            texture.Destroy(openGL);
-            texture.Create(openGL, TexturePath);
-        }
+        #endregion
     }
 }
