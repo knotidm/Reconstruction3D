@@ -1,6 +1,5 @@
 ﻿using Commander;
 using PropertyChanged;
-using SharpGL;
 using SharpGL.SceneGraph.Core;
 using SharpGL.SceneGraph.Primitives;
 using System.Collections.ObjectModel;
@@ -14,10 +13,11 @@ using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using UndoRedoFramework.Core;
+using SharpGL.SceneGraph;
+using SharpGL.WPF;
 
 namespace Reconstruction3D.ViewModels
 {
-    //TODO: Zrobić metodę wyświetlającą wszystkie Obiekty 3D
     //TODO: Undo / Redo Frmaweork
     [ImplementPropertyChanged]
     public class Commands
@@ -43,12 +43,20 @@ namespace Reconstruction3D.ViewModels
 
         #region Mesh Properties
 
-        public static OpenGL openGL { get; set; }
+        SharpGL.OpenGL openGL { get; set; } = new SharpGL.OpenGL();
         public ObservableCollection<string> RenderModes { get; set; }
         public static string SelectedRenderMode { get; set; }
         public static bool DrawAll { get; set; }
         public bool EditMode { get; set; }
-
+        public static float TranslateX { get; set; }
+        public static float TranslateY { get; set; }
+        public static float TranslateZ { get; set; }
+        public static float ScaleX { get; set; }
+        public static float ScaleY { get; set; }
+        public static float ScaleZ { get; set; }
+        public static float RotateX { get; set; }
+        public static float RotateY { get; set; }
+        public static float RotateZ { get; set; }
         #endregion
 
         public Commands()
@@ -205,7 +213,7 @@ namespace Reconstruction3D.ViewModels
         #endregion
 
         #region Methods
-        public static void ChangeRenderMode(OpenGL openGL)
+        public static void ChangeRenderMode(SharpGL.OpenGL openGL)
         {
             switch (SelectedRenderMode)
             {
@@ -223,13 +231,22 @@ namespace Reconstruction3D.ViewModels
                     }
             }
         }
-        public static void RenderRetainedMode(OpenGL openGL)
+        public static void RenderRetainedMode(SharpGL.OpenGL openGL)
         {
             if (DrawAll == true)
             {
                 foreach (var mesh in Meshes)
                 {
                     mesh.DrawMesh(openGL);
+                    mesh.TranslateX = TranslateX;
+                    mesh.TranslateY = TranslateY;
+                    mesh.TranslateZ = TranslateZ;
+                    mesh.ScaleX = ScaleX;
+                    mesh.ScaleY = ScaleY;
+                    mesh.ScaleZ = ScaleZ;
+                    mesh.RotateX = RotateX;
+                    mesh.RotateY = RotateY;
+                    mesh.RotateZ = RotateZ;
                 }
             }
             else
@@ -237,30 +254,47 @@ namespace Reconstruction3D.ViewModels
                 if (SelectedMesh != null)
                 {
                     SelectedMesh.DrawMesh(openGL);
+                    SelectedMesh.TranslateX = TranslateX;
+                    SelectedMesh.TranslateY = TranslateY;
+                    SelectedMesh.TranslateZ = TranslateZ;
+                    SelectedMesh.ScaleX = ScaleX;
+                    SelectedMesh.ScaleY = ScaleY;
+                    SelectedMesh.ScaleZ = ScaleZ;
+                    SelectedMesh.RotateX = RotateX;
+                    SelectedMesh.RotateY = RotateY;
+                    SelectedMesh.RotateZ = RotateZ;
                 }
             }
         }
-        public static void RenderImmediateMode(OpenGL openGL)
+        public static void RenderImmediateMode(SharpGL.OpenGL openGL)
         {
-            openGL.PushAttrib(OpenGL.GL_POLYGON_BIT);
+            openGL.PushAttrib(SharpGL.OpenGL.GL_POLYGON_BIT);
             openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
-
-            if (DrawAll == true)
-            {
-                foreach (var mesh in Meshes)
-                {
-                    mesh.DrawMesh(openGL);
-                }
-            }
-            else
-            {
-                if (SelectedMesh != null)
-                {
-                    SelectedMesh.DrawMesh(openGL);
-                }
-            }
+            RenderRetainedMode(openGL);
             openGL.PopAttrib();
         }
         #endregion
+
+
+        [OnCommand("Init")]
+        public void Init(OpenGLControl openGLControl)
+        {
+            openGL = openGLControl.OpenGL;
+            openGL.Enable(SharpGL.OpenGL.GL_TEXTURE_2D);
+        }
+
+        [OnCommand("Draw")]
+        public void Draw()
+        {
+            openGL.ClearColor(0f, 0f, 0f, 1f);
+            openGL.Clear(SharpGL.OpenGL.GL_COLOR_BUFFER_BIT | SharpGL.OpenGL.GL_DEPTH_BUFFER_BIT);
+
+            openGL.LoadIdentity();
+            openGL.Translate(-3.0f, 2.0f, -5.0f);
+
+            openGL.Rotate(180, 1.0f, 0.0f, 0.0f);
+
+            ChangeRenderMode(openGL);
+        }
     }
 }

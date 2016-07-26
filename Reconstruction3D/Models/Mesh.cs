@@ -15,13 +15,22 @@ namespace Reconstruction3D.Models
         public string Name { get; set; }
         public string Type { get; set; }
         public List<Point> Points { get; set; }
+        public float TranslateX { get; set; }
+        public float TranslateY { get; set; }
+        public float TranslateZ { get; set; }
+        public float ScaleX { get; set; }
+        public float ScaleY { get; set; }
+        public float ScaleZ { get; set; }
+        public float RotateX { get; set; }
+        public float RotateY { get; set; }
+        public float RotateZ { get; set; }
 
-        Texture texture ;
+        Texture texture;
         public Mesh(OpenGL openGL, string name, string type, List<Point> points, string texturePath)
         {
             texture = new Texture();
-            texture.Create(Commands.openGL, texturePath);
-            texture.Bind(Commands.openGL);
+            texture.Create(openGL, texturePath);
+            texture.Bind(openGL);
             Name = name;
             Type = type;
             Points = points;
@@ -29,6 +38,10 @@ namespace Reconstruction3D.Models
 
         public void DrawMesh(OpenGL openGL)
         {
+            openGL.Translate(TranslateX * 0.05, TranslateY * 0.05, TranslateZ * 0.05);
+            //openGL.Scale(ScaleX * 0.05, ScaleY * 0.05, ScaleZ * 0.05);
+            openGL.Rotate(RotateX, RotateY, RotateZ);
+
             openGL.Begin(OpenGL.GL_QUADS);
             // Front Face
             openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, 1.0f); // Bottom Left Of The Texture and Quad
