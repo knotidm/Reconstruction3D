@@ -74,8 +74,6 @@
             <CheckBox IsChecked="{Binding DrawAll}" Content="Draw All Shapes" />
         </ToolBar>
 
-        <!--OpenGLInitialized="Init" OpenGLDraw="Draw"-->
-
         <sharpGL:OpenGLControl x:Name="openGLControl" RenderContextType="FBO" Margin="0,42,164,95" Grid.Column="1">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="OpenGLInitialized">
