@@ -33,9 +33,9 @@ namespace Reconstruction3D.Properties
     internal class Resources
     {
 
-        private static ResourceManager resourceMan;
+        private  ResourceManager resourceMan;
 
-        private static CultureInfo resourceCulture;
+        private  CultureInfo resourceCulture;
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources()
@@ -46,7 +46,7 @@ namespace Reconstruction3D.Properties
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal static ResourceManager ResourceManager
+        internal  ResourceManager ResourceManager
         {
             get
             {
@@ -64,7 +64,7 @@ namespace Reconstruction3D.Properties
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal static CultureInfo Culture
+        internal  CultureInfo Culture
         {
             get
             {

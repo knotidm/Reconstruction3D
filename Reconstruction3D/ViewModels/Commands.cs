@@ -32,8 +32,8 @@ namespace Reconstruction3D.ViewModels
         public Visibility ImageInfo { get; set; }
         public Point CurrentPoint { get; set; }
         public List<Point> PointsToAdd { get; set; }
-        public static ObservableCollection<Mesh> Meshes { get; set; }
-        public static Mesh SelectedMesh { get; set; }
+        public  ObservableCollection<Mesh> Meshes { get; set; }
+        public  Mesh SelectedMesh { get; set; }
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
@@ -45,18 +45,18 @@ namespace Reconstruction3D.ViewModels
 
         SharpGL.OpenGL openGL { get; set; } = new SharpGL.OpenGL();
         public ObservableCollection<string> RenderModes { get; set; }
-        public static string SelectedRenderMode { get; set; }
-        public static bool DrawAll { get; set; }
+        public  string SelectedRenderMode { get; set; }
+        public  bool DrawAll { get; set; }
         public bool EditMode { get; set; }
-        public static float TranslateX { get; set; }
-        public static float TranslateY { get; set; }
-        public static float TranslateZ { get; set; }
-        public static float ScaleX { get; set; }
-        public static float ScaleY { get; set; }
-        public static float ScaleZ { get; set; }
-        public static float RotateX { get; set; }
-        public static float RotateY { get; set; }
-        public static float RotateZ { get; set; }
+        public  float TranslateX { get; set; }
+        public  float TranslateY { get; set; }
+        public  float TranslateZ { get; set; }
+        public  float ScaleX { get; set; }
+        public  float ScaleY { get; set; }
+        public  float ScaleZ { get; set; }
+        public  float RotateX { get; set; }
+        public  float RotateY { get; set; }
+        public  float RotateZ { get; set; }
         #endregion
 
         public Commands()
@@ -157,8 +157,8 @@ namespace Reconstruction3D.ViewModels
                     canvas.Children.Add(line);
 
                     // TODO: Zrobić żeby szerokość i wysokość tekstury same dopasowywały się do wycinanego obszaru
-                    var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath, PointsToAdd[1].X - PointsToAdd[0].X, PointsToAdd[1].Y - PointsToAdd[2].Y);
-                    bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp");
+                    //var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath, PointsToAdd[1].X - PointsToAdd[0].X, PointsToAdd[1].Y - PointsToAdd[2].Y);
+                    //bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp");
                 }
             }
         }
@@ -213,7 +213,7 @@ namespace Reconstruction3D.ViewModels
         #endregion
 
         #region Methods
-        public static void ChangeRenderMode(SharpGL.OpenGL openGL)
+        public  void ChangeRenderMode(SharpGL.OpenGL openGL)
         {
             switch (SelectedRenderMode)
             {
@@ -231,7 +231,7 @@ namespace Reconstruction3D.ViewModels
                     }
             }
         }
-        public static void RenderRetainedMode(SharpGL.OpenGL openGL)
+        public  void RenderRetainedMode(SharpGL.OpenGL openGL)
         {
             if (DrawAll == true)
             {
@@ -266,7 +266,7 @@ namespace Reconstruction3D.ViewModels
                 }
             }
         }
-        public static void RenderImmediateMode(SharpGL.OpenGL openGL)
+        public  void RenderImmediateMode(SharpGL.OpenGL openGL)
         {
             openGL.PushAttrib(SharpGL.OpenGL.GL_POLYGON_BIT);
             openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
