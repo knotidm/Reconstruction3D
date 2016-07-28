@@ -15,6 +15,8 @@ using System.Windows.Media;
 using UndoRedoFramework.Core;
 using SharpGL.SceneGraph;
 using SharpGL.WPF;
+using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -32,6 +34,10 @@ namespace Reconstruction3D.ViewModels
         public Visibility ImageInfo { get; set; }
         public Point CurrentPoint { get; set; }
         public List<Point> PointsToAdd { get; set; }
+        public Point3DCollection Points3DCollection { get; set; }
+
+        public MeshGeometry3D Model { get; set; }
+
         public static ObservableCollection<Mesh> Meshes { get; set; }
         public static Mesh SelectedMesh { get; set; }
         public string MeshName { get; set; }
@@ -67,6 +73,7 @@ namespace Reconstruction3D.ViewModels
             Meshes = new ObservableCollection<Mesh>();
             ImageInfo = Visibility.Hidden;
             PointsToAdd = new List<Point>();
+            Points3DCollection = new Point3DCollection();
         }
 
         #region Undo / Redo Commands
@@ -157,8 +164,44 @@ namespace Reconstruction3D.ViewModels
                     canvas.Children.Add(line);
 
                     // TODO: Zrobić żeby szerokość i wysokość tekstury same dopasowywały się do wycinanego obszaru
-                    var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath, PointsToAdd[1].X - PointsToAdd[0].X, PointsToAdd[1].Y - PointsToAdd[2].Y);
-                    bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp");
+                    //var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath, PointsToAdd[1].X - PointsToAdd[0].X, PointsToAdd[1].Y - PointsToAdd[2].Y);
+                    //bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp");
+                    var modelGroup = new Model3DGroup();
+
+                    var meshBuilder = new MeshBuilder(false, false);
+
+                    meshBuilder.AddQuad(new Point3D(1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1));
+
+                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
+                                        new Point3D(-1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
+                                        new Point3D(-1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
+                                        new Point3D(-1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1));
+
+                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
+                                        new Point3D(-1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1));
+
+                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
+                                        new Point3D(-1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1));
+
+                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
+                                        new Point3D(-1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1));
+
+                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
+                                        new Point3D(1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
+                                        new Point3D(-1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1));
+
+                    Model = meshBuilder.ToMesh(true);
+
                 }
             }
         }
