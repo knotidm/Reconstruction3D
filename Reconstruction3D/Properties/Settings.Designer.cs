@@ -21,9 +21,9 @@ namespace Reconstruction3D.Properties
     internal sealed partial class Settings : ApplicationSettingsBase
     {
 
-        private static Settings defaultInstance = ((Settings)(Synchronized(new Settings())));
+        private  Settings defaultInstance = ((Settings)(Synchronized(new Settings())));
 
-        public static Settings Default
+        public  Settings Default
         {
             get
             {
