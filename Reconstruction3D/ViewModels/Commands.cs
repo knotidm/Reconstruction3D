@@ -13,10 +13,8 @@ using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using UndoRedoFramework.Core;
-using SharpGL.SceneGraph;
 using SharpGL.WPF;
 using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -35,38 +33,35 @@ namespace Reconstruction3D.ViewModels
         public Point CurrentPoint { get; set; }
         public List<Point> PointsToAdd { get; set; }
         public Point3DCollection Points3DCollection { get; set; }
-
-        public MeshGeometry3D Model { get; set; }
-
-        public static ObservableCollection<Mesh> Meshes { get; set; }
-        public static Mesh SelectedMesh { get; set; }
+        public ObservableCollection<Mesh> Meshes { get; set; }
+        public Mesh SelectedMesh { get; set; }
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
-        public string TexturePath { get; set; } = "D:\\Visual Studio\\Reconstruction3D\\Reconstruction3D\\Textures\\Crate.bmp";
+        public string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp";
 
         #endregion
 
         #region Mesh Properties
 
-        SharpGL.OpenGL openGL { get; set; } = new SharpGL.OpenGL();
+        SharpGL.OpenGL openGL { get; set; } 
         public ObservableCollection<string> RenderModes { get; set; }
-        public static string SelectedRenderMode { get; set; }
-        public static bool DrawAll { get; set; }
+        public string SelectedRenderMode { get; set; }
+        public bool DrawAll { get; set; }
         public bool EditMode { get; set; }
-        public static float TranslateX { get; set; }
-        public static float TranslateY { get; set; }
-        public static float TranslateZ { get; set; }
-        public static float ScaleX { get; set; }
-        public static float ScaleY { get; set; }
-        public static float ScaleZ { get; set; }
-        public static float RotateX { get; set; }
-        public static float RotateY { get; set; }
-        public static float RotateZ { get; set; }
+        public float TranslateX { get; set; }
+        public float TranslateY { get; set; }
+        public float TranslateZ { get; set; }
+        public float RotateX { get; set; }
+        public float RotateY { get; set; }
+        public float RotateZ { get; set; }
+        public float Depth { get; set; } = 30;
+
         #endregion
 
         public Commands()
         {
+            openGL = new SharpGL.OpenGL();
             undoRedoContext = new UndoRedoContext();
             RenderModes = new ObservableCollection<string> { "Retained Mode", "Immediate Mode" };
             MeshTypes = new ObservableCollection<string> { "Tylne Oparcie", "Boczne Oparcie", "Siedzenie" };
@@ -164,44 +159,8 @@ namespace Reconstruction3D.ViewModels
                     canvas.Children.Add(line);
 
                     // TODO: Zrobić żeby szerokość i wysokość tekstury same dopasowywały się do wycinanego obszaru
-                    //var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath, PointsToAdd[1].X - PointsToAdd[0].X, PointsToAdd[1].Y - PointsToAdd[2].Y);
-                    //bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp");
-                    var modelGroup = new Model3DGroup();
-
-                    var meshBuilder = new MeshBuilder(false, false);
-
-                    meshBuilder.AddQuad(new Point3D(1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1));
-
-                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
-                                        new Point3D(-1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
-                                        new Point3D(-1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
-                                        new Point3D(-1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1));
-
-                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
-                                        new Point3D(-1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1));
-
-                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
-                                        new Point3D(-1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1));
-
-                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1),
-                                        new Point3D(-1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[2].X * 0.1, PointsToAdd[2].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[1].X * 0.1, PointsToAdd[1].Y * 0.1));
-
-                    meshBuilder.AddQuad(new Point3D(-1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[0].X * 0.1, PointsToAdd[0].Y * 0.1),
-                                        new Point3D(1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1),
-                                        new Point3D(-1.0, PointsToAdd[3].X * 0.1, PointsToAdd[3].Y * 0.1));
-
-                    Model = meshBuilder.ToMesh(true);
-
+                    var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath);
+                    bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
                 }
             }
         }
@@ -256,7 +215,7 @@ namespace Reconstruction3D.ViewModels
         #endregion
 
         #region Methods
-        public static void ChangeRenderMode(SharpGL.OpenGL openGL)
+        public void ChangeRenderMode(SharpGL.OpenGL openGL)
         {
             switch (SelectedRenderMode)
             {
@@ -274,7 +233,7 @@ namespace Reconstruction3D.ViewModels
                     }
             }
         }
-        public static void RenderRetainedMode(SharpGL.OpenGL openGL)
+        public void RenderRetainedMode(SharpGL.OpenGL openGL)
         {
             if (DrawAll == true)
             {
@@ -284,12 +243,10 @@ namespace Reconstruction3D.ViewModels
                     mesh.TranslateX = TranslateX;
                     mesh.TranslateY = TranslateY;
                     mesh.TranslateZ = TranslateZ;
-                    mesh.ScaleX = ScaleX;
-                    mesh.ScaleY = ScaleY;
-                    mesh.ScaleZ = ScaleZ;
                     mesh.RotateX = RotateX;
                     mesh.RotateY = RotateY;
                     mesh.RotateZ = RotateZ;
+                    mesh.Depth = Depth;
                 }
             }
             else
@@ -300,16 +257,14 @@ namespace Reconstruction3D.ViewModels
                     SelectedMesh.TranslateX = TranslateX;
                     SelectedMesh.TranslateY = TranslateY;
                     SelectedMesh.TranslateZ = TranslateZ;
-                    SelectedMesh.ScaleX = ScaleX;
-                    SelectedMesh.ScaleY = ScaleY;
-                    SelectedMesh.ScaleZ = ScaleZ;
                     SelectedMesh.RotateX = RotateX;
                     SelectedMesh.RotateY = RotateY;
                     SelectedMesh.RotateZ = RotateZ;
+                    SelectedMesh.Depth = Depth;
                 }
             }
         }
-        public static void RenderImmediateMode(SharpGL.OpenGL openGL)
+        public void RenderImmediateMode(SharpGL.OpenGL openGL)
         {
             openGL.PushAttrib(SharpGL.OpenGL.GL_POLYGON_BIT);
             openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
@@ -318,12 +273,10 @@ namespace Reconstruction3D.ViewModels
         }
         #endregion
 
-
         [OnCommand("Init")]
         public void Init(OpenGLControl openGLControl)
         {
-            openGL = openGLControl.OpenGL;
-            openGL.Enable(SharpGL.OpenGL.GL_TEXTURE_2D);
+            openGL = openGLControl.OpenGL;          
         }
 
         [OnCommand("Draw")]

@@ -5,7 +5,6 @@
         xmlns:vm="clr-namespace:Reconstruction3D.ViewModels"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
-        xmlns:ht="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
         Title="3D Reconstruction" Height="500" Width="1200">
 
     <Controls:MetroWindow.Resources>
@@ -50,7 +49,7 @@
         <Button Content="'{'" Command="{Binding AddSelectedMesh}" HorizontalAlignment="Left" Margin="16,270,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
         <Button Content="~" Command="{Binding DeleteSelectedMesh}" HorizontalAlignment="Left" Margin="61,270,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
 
-        <Button Content="Load Image" Command="{Binding LoadImage}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="151,40,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="26"/>
+        <Button Content="Load Image" Command="{Binding LoadImage}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="151,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="26"/>
         <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="241,9,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
         <Border Margin="151,70,10,203" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
             <Canvas x:Name="canvas" >
@@ -75,7 +74,7 @@
             <CheckBox IsChecked="{Binding DrawAll}" Content="Draw All Shapes" />
         </ToolBar>
 
-        <!--<sharpGL:OpenGLControl x:Name="openGLControl" RenderContextType="FBO" Margin="0,42,164,95" Grid.Column="1">
+        <sharpGL:OpenGLControl x:Name="openGLControl" RenderContextType="FBO" Margin="0,42,164,95" Grid.Column="1">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="OpenGLInitialized">
                     <i:InvokeCommandAction Command="{Binding Init}" CommandParameter="{Binding ElementName=openGLControl}" />
@@ -84,19 +83,7 @@
                     <i:InvokeCommandAction Command="{Binding Draw}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </sharpGL:OpenGLControl>-->
-
-        <ht:HelixViewport3D ZoomExtentsWhenLoaded="True" ShowFrameRate="True" Background="Black" Margin="0,42,164,95" Grid.Column="1">
-            <ht:SunLight/>
-            
-            <ModelVisual3D>
-                <ModelVisual3D.Content>
-                    <GeometryModel3D Material="{ht:Material Blue}" Geometry="{Binding Model}"/>
-                </ModelVisual3D.Content>
-            </ModelVisual3D>
-
-            <ht:GridLinesVisual3D Width="80" Length="80" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
-        </ht:HelixViewport3D>
+        </sharpGL:OpenGLControl>
 
         <Button Content="Confirm Faces / Set Mesh" Command="{Binding FacesToMesh}" HorizontalAlignment="Left" Margin="160,380,0,0" VerticalAlignment="Top" Width="182" Grid.Column="1" Height="24"/>
 
@@ -112,20 +99,18 @@
         <Slider HorizontalAlignment="Left" Value="{Binding TranslateX}" IsEnabled="{Binding EditMode}" Margin="595,128,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
         <Slider HorizontalAlignment="Left" Value="{Binding TranslateY}" IsEnabled="{Binding EditMode}" Margin="628,128,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
         <Slider HorizontalAlignment="Left" Value="{Binding TranslateZ}" IsEnabled="{Binding EditMode}" Margin="660,128,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Label Content="Scale" HorizontalAlignment="Left" Margin="553,150,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Grid.Column="1" Text="{Binding ScaleX}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="595,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <TextBox Grid.Column="1" Text="{Binding ScaleY}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="627,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
-        <TextBox Grid.Column="1" Text="{Binding ScaleZ}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="660,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding ScaleX}" IsEnabled="{Binding EditMode}" Margin="595,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding ScaleY}" IsEnabled="{Binding EditMode}" Margin="628,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding ScaleZ}" IsEnabled="{Binding EditMode}" Margin="660,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Label Content="Rotate" HorizontalAlignment="Left" Margin="551,201,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Grid.Column="1" Text="{Binding RotateX}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="595,201,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <TextBox Grid.Column="1" Text="{Binding RotateY}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="627,201,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
-        <TextBox Grid.Column="1" Text="{Binding RotateZ}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="660,201,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding RotateX}" IsEnabled="{Binding EditMode}" Margin="595,227,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding RotateY}" IsEnabled="{Binding EditMode}" Margin="628,227,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding RotateZ}" IsEnabled="{Binding EditMode}" Margin="660,227,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
+        <Label Content="Rotate" HorizontalAlignment="Left" Margin="551,150,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <TextBox Grid.Column="1" Text="{Binding RotateX}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="595,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+        <TextBox Grid.Column="1" Text="{Binding RotateY}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="627,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
+        <TextBox Grid.Column="1" Text="{Binding RotateZ}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="660,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding RotateX}" IsEnabled="{Binding EditMode}" Margin="595,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding RotateY}" IsEnabled="{Binding EditMode}" Margin="628,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding RotateZ}" IsEnabled="{Binding EditMode}" Margin="660,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
+
+        <Label Content="Z-Depth" HorizontalAlignment="Left" Margin="569,206,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <TextBox Grid.Column="1" Text="{Binding Depth}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="628,206,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
+        <Slider HorizontalAlignment="Left" Value="{Binding Depth}" IsEnabled="{Binding EditMode}" Margin="578,232,0,0" VerticalAlignment="Top" Width="82" Grid.Column="1" Height="19"/>
+
 
     </Grid>
 </Controls:MetroWindow>
