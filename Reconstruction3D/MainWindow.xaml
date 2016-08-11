@@ -14,10 +14,11 @@
     <Grid DataContext="{StaticResource ResourceKey=Commands}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="125*"/>
+            <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="173*"/>
         </Grid.ColumnDefinitions>
 
-        <ToolBar Grid.Column="0" Margin="0,0,0,434">
+        <ToolBar Grid.Column="0" VerticalAlignment="Top">
             <RepeatButton Command="{Binding Undo}">
                 <StackPanel>
                     <TextBlock Text="   ‹" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
@@ -32,12 +33,12 @@
             </RepeatButton>
         </ToolBar>
 
-        <Label Content="List of Faces" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top"/>
-        <Border Grid.Column="0" BorderBrush="Black" BorderThickness="1" Margin="10,70,354,203">
-            <DataGrid  ItemsSource="{Binding Meshes}" SelectedItem="{Binding SelectedMesh}" HorizontalAlignment="Left" Height="194" VerticalAlignment="Top" Width="135" AutoGenerateColumns="False" >
+        <Label Content="List of Faces"  Margin="10,44,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Margin="10,70,384,203" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <DataGrid ItemsSource="{Binding Meshes}" SelectedItem="{Binding SelectedMesh}" AutoGenerateColumns="False" Width="103" Height="194">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}" />
-                    <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                 </DataGrid.Columns>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
@@ -46,14 +47,14 @@
                 </i:Interaction.Triggers>
             </DataGrid>
         </Border>
-        <Button Content="'{'" Command="{Binding AddSelectedMesh}" HorizontalAlignment="Left" Margin="16,270,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
-        <Button Content="~" Command="{Binding DeleteSelectedMesh}" HorizontalAlignment="Left" Margin="61,270,0,0" VerticalAlignment="Top" Width="28" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
+        <Button Command="{Binding AddSelectedMesh}" Content="'{'" FontFamily="/Reconstruction3D;component/Fonts/#Sosa" Margin="16,270,0,0" Width="28" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Command="{Binding DeleteSelectedMesh}" Content="~" FontFamily="/Reconstruction3D;component/Fonts/#Sosa" Margin="61,270,0,0" Width="28" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Button Content="Load Image" Command="{Binding LoadImage}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="151,10,0,0" VerticalAlignment="Top" Width="85" Grid.Column="0" Height="26"/>
-        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" HorizontalAlignment="Left" Margin="241,9,0,0" VerticalAlignment="Top" Grid.Column="0" Height="26" Width="245"/>
-        <Border Margin="151,70,10,203" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
-            <Canvas x:Name="canvas" >
-                <Image Source="{Binding ImagePath}" HorizontalAlignment="Left" Height="193" VerticalAlignment="Top" Width="337" >
+        <Button Command="{Binding LoadImage}" Content="Load Image" Grid.Column="0" Margin="151,10,0,0" Width="85" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" Grid.Column="0" Margin="241,9,0,0" Width="245" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Margin="121,42,5,167">
+            <Canvas x:Name="canvas">
+                <Image Source="{Binding ImagePath}" Width="372" Height="258">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseLeftButtonDown">
                             <i:InvokeCommandAction Command="{Binding LeftClickOnImage}" CommandParameter="{Binding ElementName=canvas}" />
@@ -62,19 +63,21 @@
                 </Image>
             </Canvas>
         </Border>
-        <Label Content="Type" HorizontalAlignment="Left" Margin="159,272,0,0" VerticalAlignment="Top"/>
-        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedMeshType}" HorizontalAlignment="Left" Margin="194,272,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.875,0.538"/>
-        <Label Content="Name" HorizontalAlignment="Left" Margin="314,272,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="356,272,0,0" TextWrapping="Wrap" Text="{Binding MeshName}" VerticalAlignment="Top" Width="120"/>
-        <Button Content="Create Mesh" Command="{Binding CreateMesh}" CommandParameter="{Binding ElementName=canvas}" HorizontalAlignment="Left" Margin="374,314,0,0" VerticalAlignment="Top" Width="88" Grid.Column="0" Height="24"/>
+        <Label Content="Type" Margin="159,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedMeshType}" Margin="194,0,0,136" Width="120" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Label Content="Name" Margin="314,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <TextBox Text="{Binding MeshName}" TextWrapping="Wrap" Margin="356,0,0,136" Width="120" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Button Command="{Binding CreateMesh}" CommandParameter="{Binding ElementName=canvas}" Content="Create Mesh" Margin="374,0,0,106" Width="88" Height="24" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 
-        <ToolBar Grid.Column="1" Margin="0,0,0,434">
+        <GridSplitter Background="LightBlue" Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+        <ToolBar Grid.Column="2" VerticalAlignment="Top">
             <Label Content="Render Mode"/>
             <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}" Width="140"/>
             <CheckBox IsChecked="{Binding DrawAll}" Content="Draw All Shapes" />
         </ToolBar>
 
-        <sharpGL:OpenGLControl x:Name="openGLControl" RenderContextType="FBO" Margin="0,42,164,95" Grid.Column="1">
+        <sharpGL:OpenGLControl x:Name="openGLControl" RenderContextType="FBO" Grid.Column="2" Margin="5,42,222,136" >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="OpenGLInitialized">
                     <i:InvokeCommandAction Command="{Binding Init}" CommandParameter="{Binding ElementName=openGLControl}" />
@@ -85,32 +88,31 @@
             </i:Interaction.Triggers>
         </sharpGL:OpenGLControl>
 
-        <Button Content="Confirm Faces / Set Mesh" Command="{Binding FacesToMesh}" HorizontalAlignment="Left" Margin="160,380,0,0" VerticalAlignment="Top" Width="182" Grid.Column="1" Height="24"/>
+        <Button Command="{Binding FacesToMesh}" Content="Confirm Faces / Set Mesh" Grid.Column="2" Margin="145,0,0,106" Width="182" Height="24" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 
-        <CheckBox IsChecked="{Binding EditMode}" Content="Edit Mode" Grid.Column="1" HorizontalAlignment="Left" Margin="576,46,0,0" VerticalAlignment="Top" Height="18" Width="79"/>
-        <Label Content="Axis" HorizontalAlignment="Left" Margin="559,76,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label Content="x" HorizontalAlignment="Left" Margin="603,76,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label Content="y" HorizontalAlignment="Left" Margin="635,76,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label Content="z" HorizontalAlignment="Left" Margin="667,76,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label Content="Translate" HorizontalAlignment="Left" Margin="533,102,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Grid.Column="1" Text="{Binding TranslateX}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="595,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <TextBox Grid.Column="1" Text="{Binding TranslateY}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="627,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
-        <TextBox Grid.Column="1" Text="{Binding TranslateZ}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="660,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding TranslateX}" IsEnabled="{Binding EditMode}" Margin="595,128,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding TranslateY}" IsEnabled="{Binding EditMode}" Margin="628,128,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding TranslateZ}" IsEnabled="{Binding EditMode}" Margin="660,128,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Label Content="Rotate" HorizontalAlignment="Left" Margin="551,150,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Grid.Column="1" Text="{Binding RotateX}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="595,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <TextBox Grid.Column="1" Text="{Binding RotateY}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="627,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="33"/>
-        <TextBox Grid.Column="1" Text="{Binding RotateZ}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="660,150,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding RotateX}" IsEnabled="{Binding EditMode}" Margin="595,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding RotateY}" IsEnabled="{Binding EditMode}" Margin="628,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding RotateZ}" IsEnabled="{Binding EditMode}" Margin="660,176,0,0" VerticalAlignment="Top" Width="32" Grid.Column="1" Height="16"/>
+        <CheckBox IsChecked="{Binding EditMode}" Content="Edit Mode" Grid.Column="2" Margin="0,42,53,0" Width="79" Height="18" HorizontalAlignment="Right" VerticalAlignment="Top" />
+        <Label Content="Axis" Grid.Column="2" Margin="0,73,159,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Label Content="x" Grid.Column="2" Margin="0,73,125,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Label Content="y" Grid.Column="2" Margin="0,73,76,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Label Content="z" Grid.Column="2" Margin="0,73,26,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Label Content="Translate" Grid.Column="2" Margin="0,99,158,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding TranslateX}" IsEnabled="{Binding EditMode}" TextWrapping="Wrap" Grid.Column="2" Margin="0,99,112,0" Width="45" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding TranslateY}" IsEnabled="{Binding EditMode}" TextWrapping="Wrap" Grid.Column="2" Margin="0,99,61,0" Width="47" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding TranslateZ}" IsEnabled="{Binding EditMode}" TextWrapping="Wrap" Grid.Column="2" Margin="0,99,10,0" Width="46" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Slider Value="{Binding TranslateX}" IsEnabled="{Binding EditMode}" Grid.Column="2" Margin="0,125,113,0" Width="45" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Slider Value="{Binding TranslateY}" IsEnabled="{Binding EditMode}" Grid.Column="2" Margin="0,125,61,0" Width="47" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Slider Value="{Binding TranslateZ}" IsEnabled="{Binding EditMode}" Grid.Column="2" Margin="0,125,10,0" Width="46" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Label Content="Rotate" Grid.Column="2" Margin="0,146,159,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding RotateX}" IsEnabled="{Binding EditMode}" TextWrapping="Wrap" Grid.Column="2" Margin="0,146,113,0" Width="45" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding RotateY}" IsEnabled="{Binding EditMode}" TextWrapping="Wrap" Grid.Column="2" Margin="0,147,61,0" Width="47" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding RotateZ}" IsEnabled="{Binding EditMode}" TextWrapping="Wrap" Grid.Column="2" Margin="0,147,10,0" Width="46" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Slider Value="{Binding RotateX}" IsEnabled="{Binding EditMode}" Grid.Column="2" Margin="0,173,113,0" Width="45" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Slider Value="{Binding RotateY}" IsEnabled="{Binding EditMode}" Grid.Column="2" Margin="0,173,61,0" Width="47" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Slider Value="{Binding RotateZ}" IsEnabled="{Binding EditMode}" Grid.Column="2" Margin="0,173,10,0" Width="46" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 
-        <Label Content="Z-Depth" HorizontalAlignment="Left" Margin="569,206,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Grid.Column="1" Text="{Binding Depth}" IsEnabled="{Binding EditMode}" HorizontalAlignment="Left" Height="24" Margin="628,206,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="32"/>
-        <Slider HorizontalAlignment="Left" Value="{Binding Depth}" IsEnabled="{Binding EditMode}" Margin="578,232,0,0" VerticalAlignment="Top" Width="82" Grid.Column="1" Height="19"/>
-
+        <Label Content="Z-Depth" Grid.Column="2" Margin="0,213,113,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding Depth}" IsEnabled="{Binding EditMode}" TextWrapping="Wrap" Grid.Column="2" Margin="0,214,61,0" Width="47" Height="24" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Slider Value="{Binding Depth}" IsEnabled="{Binding EditMode}" Grid.Column="2" Margin="0,239,61,0" Width="80" Height="19" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 
     </Grid>
 </Controls:MetroWindow>

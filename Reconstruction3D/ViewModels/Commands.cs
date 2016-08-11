@@ -12,9 +12,7 @@ using Reconstruction3D.Models;
 using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
-using UndoRedoFramework.Core;
 using SharpGL.WPF;
-using System.Windows.Media.Media3D;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -24,21 +22,18 @@ namespace Reconstruction3D.ViewModels
     {
         int i = -1;
 
-        private UndoRedoContext undoRedoContext;
-
         #region Image Properties
 
         public string ImagePath { get; set; }
         public Visibility ImageInfo { get; set; }
         public Point CurrentPoint { get; set; }
         public List<Point> PointsToAdd { get; set; }
-        public Point3DCollection Points3DCollection { get; set; }
         public ObservableCollection<Mesh> Meshes { get; set; }
         public Mesh SelectedMesh { get; set; }
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
-        public string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp";
+        public string TexturePath { get; set; } = "C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp";
 
         #endregion
 
@@ -62,33 +57,17 @@ namespace Reconstruction3D.ViewModels
         public Commands()
         {
             openGL = new SharpGL.OpenGL();
-            undoRedoContext = new UndoRedoContext();
             RenderModes = new ObservableCollection<string> { "Retained Mode", "Immediate Mode" };
             MeshTypes = new ObservableCollection<string> { "Tylne Oparcie", "Boczne Oparcie", "Siedzenie" };
             Meshes = new ObservableCollection<Mesh>();
             ImageInfo = Visibility.Hidden;
             PointsToAdd = new List<Point>();
-            Points3DCollection = new Point3DCollection();
         }
-
-        #region Undo / Redo Commands
-
-        [OnCommand("Undo")]
-        public ICommand Undo()
-        {
-            return undoRedoContext.GetUndoCommand();
-        }
-        [OnCommand("Redo")]
-        public ICommand Redo()
-        {
-            return undoRedoContext.GetRedoCommand();
-        }
-        #endregion
 
         #region Image Commands
 
         [OnCommand("LoadImage")]
-        public void LoadImage(Canvas canvas)
+        public void LoadImage()
         {
             var openFileDialog = new OpenFileDialog() { Filter = @"JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif" };
             var result = openFileDialog.ShowDialog();
@@ -160,7 +139,7 @@ namespace Reconstruction3D.ViewModels
 
                     // TODO: Zrobić żeby szerokość i wysokość tekstury same dopasowywały się do wycinanego obszaru
                     var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath);
-                    bitmap.Save("D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
+                    bitmap.Save("C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
                 }
             }
         }
