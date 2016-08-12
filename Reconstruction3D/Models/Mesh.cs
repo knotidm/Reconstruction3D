@@ -13,62 +13,58 @@ namespace Reconstruction3D.Models
         public string Name { get; set; }
         public string Type { get; set; }
         public List<Point> Points { get; set; }
-        public float TranslateX { get; set; }
-        public float TranslateY { get; set; }
-        public float TranslateZ { get; set; }
-        public float RotateX { get; set; }
-        public float RotateY { get; set; }
-        public float RotateZ { get; set; }
-        public float Depth { get; set; }
-        public Texture texture { get; set; }
+        public Transformation Transformation { get; set; }
+        public Texture Texture { get; set; }
 
-        public Mesh(OpenGL openGL, string name, string type, List<Point> points, string texturePath)
+        public Mesh(OpenGL openGL, string name, string type, List<Point> points, Transformation transformation, string texturePath)
         {
             openGL.Enable(OpenGL.GL_TEXTURE_2D);
-            texture = new Texture();
-            texture.Create(openGL, texturePath);
-            texture.Bind(openGL);
+            
             Name = name;
             Type = type;
             Points = points;
+            Transformation = transformation;
+            Texture = new Texture();
+            Texture.Create(openGL, texturePath);
+            Texture.Bind(openGL);
         }
 
         public void DrawMesh(OpenGL openGL)
         {
-            openGL.Translate(TranslateX * 0.05, TranslateY * 0.05, TranslateZ * 0.05);
-            openGL.Rotate(RotateX, RotateY, RotateZ);
+            openGL.Translate(Transformation.TranslateX * 0.05, Transformation.TranslateY * 0.05, Transformation.TranslateZ * 0.05);
+            openGL.Rotate(Transformation.RotateX, Transformation.RotateY, Transformation.RotateZ);
 
             openGL.Begin(OpenGL.GL_QUADS);
             // Front Face
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, Depth * 0.01); // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, Depth * 0.01); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, Depth * 0.01); // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, Depth * 0.01); // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, Transformation.Depth * 0.01); // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, Transformation.Depth * 0.01); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, Transformation.Depth * 0.01); // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, Transformation.Depth * 0.01); // Top Left Of The Texture and Quad
             // Back Face
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, -Depth * 0.01); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, -Depth * 0.01); // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, -Depth * 0.01);  // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, -Depth * 0.01); // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, -Transformation.Depth * 0.01); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, -Transformation.Depth * 0.01); // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, -Transformation.Depth * 0.01);  // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, -Transformation.Depth * 0.01); // Bottom Left Of The Texture and Quad
             // Top Face
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, -Depth * 0.01); // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, Depth * 0.01);  // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, Depth * 0.01);   // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, -Depth * 0.01);  // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, -Transformation.Depth * 0.01); // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, Transformation.Depth * 0.01);  // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, Transformation.Depth * 0.01);   // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, -Transformation.Depth * 0.01);  // Top Right Of The Texture and Quad
             // Bottom Face
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, -Depth * 0.01); // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, -Depth * 0.01); // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, Depth * 0.01);  // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, Depth * 0.01); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, -Transformation.Depth * 0.01); // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, -Transformation.Depth * 0.01); // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, Transformation.Depth * 0.01);  // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, Transformation.Depth * 0.01); // Bottom Right Of The Texture and Quad
             // Right face
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, -Depth * 0.01); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, -Depth * 0.01);  // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, Depth * 0.01);   // Top Left Of The Texture and Quad
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, Depth * 0.01);  // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, -Transformation.Depth * 0.01); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, -Transformation.Depth * 0.01);  // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[2].X * 0.01, Points[2].Y * 0.01, Transformation.Depth * 0.01);   // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[1].X * 0.01, Points[1].Y * 0.01, Transformation.Depth * 0.01);  // Bottom Left Of The Texture and Quad
             // Left Face
-            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, -Depth * 0.01); // Bottom Left Of The Texture and Quad
-            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, Depth * 0.01); // Bottom Right Of The Texture and Quad
-            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, Depth * 0.01);  // Top Right Of The Texture and Quad
-            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, -Depth * 0.01);  // Top Left Of The Texture and Quad
+            openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, -Transformation.Depth * 0.01); // Bottom Left Of The Texture and Quad
+            openGL.TexCoord(1.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, Transformation.Depth * 0.01); // Bottom Right Of The Texture and Quad
+            openGL.TexCoord(1.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, Transformation.Depth * 0.01);  // Top Right Of The Texture and Quad
+            openGL.TexCoord(0.0f, 1.0f); openGL.Vertex(Points[3].X * 0.01, Points[3].Y * 0.01, -Transformation.Depth * 0.01);  // Top Left Of The Texture and Quad
 
             openGL.End();
 

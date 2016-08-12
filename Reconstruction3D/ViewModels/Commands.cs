@@ -33,13 +33,13 @@ namespace Reconstruction3D.ViewModels
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
-        public string TexturePath { get; set; } = "C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp";
+        public string TexturePath { get; set; } = "C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
 
         #endregion
 
         #region Mesh Properties
 
-        SharpGL.OpenGL openGL { get; set; } 
+        SharpGL.OpenGL openGL { get; set; }
         public ObservableCollection<string> RenderModes { get; set; }
         public string SelectedRenderMode { get; set; }
         public bool DrawAll { get; set; }
@@ -50,7 +50,7 @@ namespace Reconstruction3D.ViewModels
         public float RotateX { get; set; }
         public float RotateY { get; set; }
         public float RotateZ { get; set; }
-        public float Depth { get; set; } = 30;
+        public float Depth { get; set; }
 
         #endregion
 
@@ -140,6 +140,7 @@ namespace Reconstruction3D.ViewModels
                     // TODO: Zrobić żeby szerokość i wysokość tekstury same dopasowywały się do wycinanego obszaru
                     var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath);
                     bitmap.Save("C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
+                    i = -1;
                 }
             }
         }
@@ -149,7 +150,7 @@ namespace Reconstruction3D.ViewModels
         {
             if (PointsToAdd.Count == 4)
             {
-                Meshes.Add(new Mesh(openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), TexturePath));
+                Meshes.Add(new Mesh(openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), new Transformation(), TexturePath));
                 i = -1;
             }
         }
@@ -159,6 +160,13 @@ namespace Reconstruction3D.ViewModels
         {
             try
             {
+                TranslateX = SelectedMesh.Transformation.TranslateX;
+                TranslateY = SelectedMesh.Transformation.TranslateY;
+                TranslateZ = SelectedMesh.Transformation.TranslateZ;
+                RotateX = SelectedMesh.Transformation.RotateX;
+                RotateY = SelectedMesh.Transformation.RotateY;
+                RotateZ = SelectedMesh.Transformation.RotateZ;
+                Depth = SelectedMesh.Transformation.Depth;
                 canvas.Children.RemoveRange(1, 9);
                 SelectedMesh.RedrawOnImage(canvas);
                 i = -1;
@@ -185,77 +193,10 @@ namespace Reconstruction3D.ViewModels
 
         #region Mesh Commands
 
-        [OnCommand("FacesToMesh")]
-        public void FacesToMesh()
-        {
-
-        }
-
-        #endregion
-
-        #region Methods
-        public void ChangeRenderMode(SharpGL.OpenGL openGL)
-        {
-            switch (SelectedRenderMode)
-            {
-                case "Retained Mode":
-                    {
-                        RenderRetainedMode(openGL);
-                        break;
-                    }
-                case "Immediate Mode":
-                    {
-                        var axies = new Axies();
-                        axies.Render(openGL, RenderMode.Design);
-                        RenderImmediateMode(openGL);
-                        break;
-                    }
-            }
-        }
-        public void RenderRetainedMode(SharpGL.OpenGL openGL)
-        {
-            if (DrawAll == true)
-            {
-                foreach (var mesh in Meshes)
-                {
-                    mesh.DrawMesh(openGL);
-                    mesh.TranslateX = TranslateX;
-                    mesh.TranslateY = TranslateY;
-                    mesh.TranslateZ = TranslateZ;
-                    mesh.RotateX = RotateX;
-                    mesh.RotateY = RotateY;
-                    mesh.RotateZ = RotateZ;
-                    mesh.Depth = Depth;
-                }
-            }
-            else
-            {
-                if (SelectedMesh != null)
-                {
-                    SelectedMesh.DrawMesh(openGL);
-                    SelectedMesh.TranslateX = TranslateX;
-                    SelectedMesh.TranslateY = TranslateY;
-                    SelectedMesh.TranslateZ = TranslateZ;
-                    SelectedMesh.RotateX = RotateX;
-                    SelectedMesh.RotateY = RotateY;
-                    SelectedMesh.RotateZ = RotateZ;
-                    SelectedMesh.Depth = Depth;
-                }
-            }
-        }
-        public void RenderImmediateMode(SharpGL.OpenGL openGL)
-        {
-            openGL.PushAttrib(SharpGL.OpenGL.GL_POLYGON_BIT);
-            openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
-            RenderRetainedMode(openGL);
-            openGL.PopAttrib();
-        }
-        #endregion
-
         [OnCommand("Init")]
         public void Init(OpenGLControl openGLControl)
         {
-            openGL = openGLControl.OpenGL;          
+            openGL = openGLControl.OpenGL;
         }
 
         [OnCommand("Draw")]
@@ -271,5 +212,74 @@ namespace Reconstruction3D.ViewModels
 
             ChangeRenderMode(openGL);
         }
+        // TODO: FacesToMesh
+        [OnCommand("FacesToMesh")]
+        public void FacesToMesh()
+        {
+
+        }
+
+        #region Methods
+        public void ChangeRenderMode(SharpGL.OpenGL openGL)
+        {
+            switch (SelectedRenderMode)
+            {
+                case "Retained Mode":
+                    {
+                        RenderRetainedMode(openGL);
+                        break;
+                    }
+                case "Immediate Mode":
+                    {
+                        RenderImmediateMode(openGL);
+                        break;
+                    }
+            }
+        }
+        public void RenderRetainedMode(SharpGL.OpenGL openGL)
+        {
+            var axies = new Axies();
+            axies.Render(openGL, RenderMode.Design);
+
+            if (DrawAll == true)
+            {
+                foreach (var mesh in Meshes)
+                {
+                    mesh.DrawMesh(openGL);
+                    //mesh.Transformation.TranslateX = TranslateX;
+                    //mesh.Transformation.TranslateY = TranslateY;
+                    //mesh.Transformation.TranslateZ = TranslateZ;
+                    //mesh.Transformation.RotateX = RotateX;
+                    //mesh.Transformation.RotateY = RotateY;
+                    //mesh.Transformation.RotateZ = RotateZ;
+                    //mesh.Transformation.Depth = Depth;
+                }
+            }
+            else
+            {
+                if (SelectedMesh != null)
+                {
+                    SelectedMesh.DrawMesh(openGL);
+                    SelectedMesh.Transformation.TranslateX = TranslateX;
+                    SelectedMesh.Transformation.TranslateY = TranslateY;
+                    SelectedMesh.Transformation.TranslateZ = TranslateZ;
+                    SelectedMesh.Transformation.RotateX = RotateX;
+                    SelectedMesh.Transformation.RotateY = RotateY;
+                    SelectedMesh.Transformation.RotateZ = RotateZ;
+                    SelectedMesh.Transformation.Depth = Depth;
+                }
+            }
+        }
+        public void RenderImmediateMode(SharpGL.OpenGL openGL)
+        {
+            openGL.PushAttrib(SharpGL.OpenGL.GL_POLYGON_BIT);
+            openGL.PolygonMode(FaceMode.FrontAndBack, PolygonMode.Lines);
+            RenderRetainedMode(openGL);
+            openGL.PopAttrib();
+        }
+
+        #endregion
+
+        #endregion
     }
 }

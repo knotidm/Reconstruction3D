@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Reconstruction3D.ViewModels
+namespace Reconstruction3D.Models
 {
     public class CreateTexture
     {

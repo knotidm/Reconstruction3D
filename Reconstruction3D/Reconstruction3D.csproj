@@ -121,8 +121,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Mesh.cs" />
+    <Compile Include="Models\Transformation.cs" />
     <Compile Include="ViewModels\Commands.cs" />
-    <Compile Include="ViewModels\CreateTexture.cs" />
+    <Compile Include="Models\CreateTexture.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -154,10 +155,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Resource Include="Fonts\iconic_fill.otf" />
-    <Resource Include="Fonts\iconic_fill.ttf" />
     <Resource Include="Fonts\sosa-regular-webfont.ttf" />
-    <Resource Include="Fonts\typicons.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

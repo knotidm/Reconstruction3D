@@ -18,23 +18,21 @@
             <ColumnDefinition Width="173*"/>
         </Grid.ColumnDefinitions>
 
-        <ToolBar Grid.Column="0" VerticalAlignment="Top">
-            <RepeatButton Command="{Binding Undo}">
-                <StackPanel>
-                    <TextBlock Text="   ‹" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
-                    <TextBlock Text="Undo" />
-                </StackPanel>
-            </RepeatButton>
-            <RepeatButton Command="{Binding Redo}">
-                <StackPanel>
-                    <TextBlock Text="   ›" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
-                    <TextBlock Text="Redo" />
-                </StackPanel>
-            </RepeatButton>
-        </ToolBar>
+        <RepeatButton Command="{Binding Undo}" Margin="20,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+            <StackPanel>
+                <TextBlock Text="   ‹" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
+                <TextBlock Text="Undo" />
+            </StackPanel>
+        </RepeatButton>
+        <RepeatButton Command="{Binding Redo}" Margin="68,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel>
+                <TextBlock Text="   ›" FontFamily="/Reconstruction3D;component/Fonts/#Sosa"/>
+                <TextBlock Text="Redo" />
+            </StackPanel>
+        </RepeatButton>
 
-        <Label Content="List of Faces"  Margin="10,44,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Margin="10,70,384,203" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Label Content="List of Faces" Margin="10,44,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Border BorderBrush="Black" BorderThickness="1" Margin="10,69,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
             <DataGrid ItemsSource="{Binding Meshes}" SelectedItem="{Binding SelectedMesh}" AutoGenerateColumns="False" Width="103" Height="194">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Type" Binding="{Binding Type}" />
@@ -50,9 +48,9 @@
         <Button Command="{Binding AddSelectedMesh}" Content="'{'" FontFamily="/Reconstruction3D;component/Fonts/#Sosa" Margin="16,270,0,0" Width="28" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Button Command="{Binding DeleteSelectedMesh}" Content="~" FontFamily="/Reconstruction3D;component/Fonts/#Sosa" Margin="61,270,0,0" Width="28" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <Button Command="{Binding LoadImage}" Content="Load Image" Grid.Column="0" Margin="151,10,0,0" Width="85" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" Grid.Column="0" Margin="241,9,0,0" Width="245" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Margin="121,42,5,167">
+        <Button Command="{Binding LoadImage}" Content="Load Image" Margin="151,7,0,0" Width="85" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" Margin="241,9,0,0" Width="245" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Border BorderBrush="Black" BorderThickness="1" Margin="121,42,5,167">
             <Canvas x:Name="canvas">
                 <Image Source="{Binding ImagePath}" Width="372" Height="258">
                     <i:Interaction.Triggers>
@@ -64,18 +62,16 @@
             </Canvas>
         </Border>
         <Label Content="Type" Margin="159,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedMeshType}" Margin="194,0,0,136" Width="120" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedMeshType}" Margin="194,0,0,136" Width="120" HorizontalAlignment="Left" VerticalAlignment="Bottom" VerticalContentAlignment="Top"/>
         <Label Content="Name" Margin="314,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         <TextBox Text="{Binding MeshName}" TextWrapping="Wrap" Margin="356,0,0,136" Width="120" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         <Button Command="{Binding CreateMesh}" CommandParameter="{Binding ElementName=canvas}" Content="Create Mesh" Margin="374,0,0,106" Width="88" Height="24" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 
         <GridSplitter Background="LightBlue" Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
-        <ToolBar Grid.Column="2" VerticalAlignment="Top">
-            <Label Content="Render Mode"/>
-            <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}" Width="140"/>
-            <CheckBox IsChecked="{Binding DrawAll}" Content="Draw All Shapes" />
-        </ToolBar>
+        <Label Content="Render Mode" Grid.Column="2" Margin="5,6,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}" Grid.Column="2" Margin="92,6,0,0" Width="120" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Top"/>
+        <CheckBox IsChecked="{Binding DrawAll}" Content="Draw All Shapes" Grid.Column="2" Margin="240,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
         <sharpGL:OpenGLControl x:Name="openGLControl" RenderContextType="FBO" Grid.Column="2" Margin="5,42,222,136" >
             <i:Interaction.Triggers>
