@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using SharpGL.WPF;
 using System.Windows.Controls.Primitives;
+using SharpGL.SceneGraph.Assets;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -27,6 +28,7 @@ namespace Reconstruction3D.ViewModels
         #region Image Properties
 
         public string ImagePath { get; set; }
+        public string TexturePath { get; set; }
         public Visibility ImageInfo { get; set; }
         public Point CurrentPoint { get; set; }
         public List<Point> PointsToAdd { get; set; }
@@ -35,7 +37,6 @@ namespace Reconstruction3D.ViewModels
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
-
         #endregion
 
         #region Mesh Properties
@@ -86,9 +87,11 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("LoadTexture")]
         public void LoadTexture(OpenGLControl openGLControl)
         {
-            if (SelectedMesh != null)
-            {
-                SelectedMesh.LoadTexture(openGLControl);
+            var openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {                
+                TexturePath = openFileDialog.FileName;
             }
         }
 
@@ -162,9 +165,9 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("CreateMesh")]
         public void CreateMesh(Canvas canvas)
         {
-            if (PointsToAdd.Count == 4)
+            if (PointsToAdd.Count == 4 && TexturePath != null)
             {
-                Meshes.Add(new Mesh(openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), new Transformation(), new SharpGL.SceneGraph.Assets.Texture()));
+                Meshes.Add(new Mesh(openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), new Transformation(), TexturePath));
                 i = -1;
             }
         }
@@ -181,6 +184,7 @@ namespace Reconstruction3D.ViewModels
                 RotateY = SelectedMesh.Transformation.RotateY;
                 RotateZ = SelectedMesh.Transformation.RotateZ;
                 Depth = SelectedMesh.Transformation.Depth;
+                TexturePath = SelectedMesh.TexturePath;
                 canvas.Children.RemoveRange(1, 9);
                 SelectedMesh.RedrawOnImage(canvas);
                 i = -1;
@@ -293,6 +297,7 @@ namespace Reconstruction3D.ViewModels
                     SelectedMesh.Transformation.RotateY = RotateY;
                     SelectedMesh.Transformation.RotateZ = RotateZ;
                     SelectedMesh.Transformation.Depth = Depth;
+                    SelectedMesh.TexturePath = TexturePath;
                 }
             }
         }

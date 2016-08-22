@@ -16,10 +16,10 @@ namespace Reconstruction3D.Models
         public string Type { get; set; }
         public List<Point> Points { get; set; }
         public Transformation Transformation { get; set; }
-        private Texture Texture { get; set; }
-        private string TexturePath { get; set; } = "C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
+        public Texture Texture { get; set; }
+        public string TexturePath { get; set; }
 
-        public Mesh(OpenGL openGL, string name, string type, List<Point> points, Transformation transformation, Texture texture)
+        public Mesh(OpenGL openGL, string name, string type, List<Point> points, Transformation transformation, string texturePath)
         {
             openGL.Enable(OpenGL.GL_TEXTURE_2D);
 
@@ -27,7 +27,8 @@ namespace Reconstruction3D.Models
             Type = type;
             Points = points;
             Transformation = transformation;
-            Texture = texture;
+            Texture = new Texture();
+            TexturePath = texturePath;
             Texture.Create(openGL, TexturePath);
             Texture.Bind(openGL);
         }
@@ -116,17 +117,6 @@ namespace Reconstruction3D.Models
         public void RedrawOnImageCorrection(Canvas canvas)
         {
 
-        }
-
-        public void LoadTexture(SharpGL.WPF.OpenGLControl openGLControl)
-        {
-            var openFileDialog = new OpenFileDialog();
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                Texture.Destroy(openGLControl.OpenGL);
-                Texture.Create(openGLControl.OpenGL, openFileDialog.FileName);
-            }
         }
     }
 }
