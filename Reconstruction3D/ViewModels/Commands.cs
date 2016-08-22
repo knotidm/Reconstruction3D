@@ -33,7 +33,7 @@ namespace Reconstruction3D.ViewModels
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
-        public string TexturePath { get; set; } = "C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
+        public string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
 
         #endregion
 
@@ -138,8 +138,8 @@ namespace Reconstruction3D.ViewModels
                     canvas.Children.Add(line);
 
                     // TODO: Zrobić żeby szerokość i wysokość tekstury same dopasowywały się do wycinanego obszaru
-                    var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath);
-                    bitmap.Save("C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
+                    //var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath);
+                    //bitmap.Save("C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
                     i = -1;
                 }
             }
@@ -200,7 +200,7 @@ namespace Reconstruction3D.ViewModels
         }
 
         [OnCommand("Draw")]
-        public void Draw()
+        public void Draw(OpenGLControl openGLControl)
         {
             openGL.ClearColor(0f, 0f, 0f, 1f);
             openGL.Clear(SharpGL.OpenGL.GL_COLOR_BUFFER_BIT | SharpGL.OpenGL.GL_DEPTH_BUFFER_BIT);
@@ -210,8 +210,20 @@ namespace Reconstruction3D.ViewModels
 
             openGL.Rotate(180, 1.0f, 0.0f, 0.0f);
 
+            GlobalRotate(openGLControl);
             ChangeRenderMode(openGL);
         }
+
+        [OnCommand("GlobalRotate")]
+        public void GlobalRotate(OpenGLControl openGLControl)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed && EditMode == false && openGLControl.IsMouseOver)
+            {
+                
+                openGL.Rotate((float)Mouse.GetPosition(openGLControl).X, (float)Mouse.GetPosition(openGLControl).Y, 0);
+            }
+        }
+
         // TODO: FacesToMesh
         [OnCommand("FacesToMesh")]
         public void FacesToMesh()

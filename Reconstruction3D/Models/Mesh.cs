@@ -69,6 +69,7 @@ namespace Reconstruction3D.Models
             openGL.End();
 
             openGL.Flush();
+            
         }
         public void RedrawOnImage(Canvas canvas)
         {
@@ -109,6 +110,12 @@ namespace Reconstruction3D.Models
                     canvas.Children.Add(line);
                 }
             }
+        }
+
+        //TODO: Metoda do korekcji zaznaczonego obszaru na zdjęciu
+        public void RedrawOnImageCorrection(Canvas canvas)
+        {
+
         }
     }
 }

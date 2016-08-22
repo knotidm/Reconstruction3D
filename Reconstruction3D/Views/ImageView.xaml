@@ -1,0 +1,33 @@
+﻿<UserControl x:Name="ImageViewUserControl"
+             x:Class="Reconstruction3D.Views.ImageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:vm="clr-namespace:Reconstruction3D.ViewModels"
+             Height="500" Width="1200">
+    <UserControl.Resources>
+        <vm:ImageViewModel x:Key="ImageViewModel"/>
+    </UserControl.Resources>
+
+    <Grid DataContext="{StaticResource ResourceKey=ImageViewModel}">
+        <Button Command="{Binding LoadImage}" Content="Load Image" Margin="151,7,0,0" Width="85" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Content="Draw 4 points on image to set mesh vertices" Visibility="{Binding ImageInfo}" Margin="241,9,0,0" Width="245" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Border BorderBrush="Black" BorderThickness="1" Margin="121,42,5,167">
+            <Canvas x:Name="canvas">
+                <Image Source="{Binding ImagePath}" Width="372" Height="258">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding LeftClickOnImage}" CommandParameter="{Binding ElementName=canvas}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
+            </Canvas>
+        </Border>
+        <Label Content="Type" Margin="159,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <ComboBox ItemsSource="{Binding MeshTypes}" SelectedItem="{Binding SelectedMeshType}" Margin="194,0,0,136" Width="120" HorizontalAlignment="Left" VerticalAlignment="Bottom" VerticalContentAlignment="Top"/>
+        <Label Content="Name" Margin="314,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <TextBox Text="{Binding MeshName}" TextWrapping="Wrap" Margin="356,0,0,136" Width="120" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Button Command="{Binding CreateMesh}" CommandParameter="{Binding ElementName=canvas}" Content="Create Mesh" Margin="374,0,0,106" Width="88" Height="24" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
+    </Grid>
+</UserControl>
