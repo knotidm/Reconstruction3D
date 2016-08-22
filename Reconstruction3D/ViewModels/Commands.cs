@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using SharpGL.WPF;
+using System.Windows.Controls.Primitives;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -21,6 +22,7 @@ namespace Reconstruction3D.ViewModels
     public class Commands
     {
         int i = -1;
+        public Thumb thumb;
 
         #region Image Properties
 
@@ -33,7 +35,6 @@ namespace Reconstruction3D.ViewModels
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
-        public string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
 
         #endregion
 
@@ -82,6 +83,15 @@ namespace Reconstruction3D.ViewModels
             }
         }
 
+        [OnCommand("LoadTexture")]
+        public void LoadTexture(OpenGLControl openGLControl)
+        {
+            if (SelectedMesh != null)
+            {
+                SelectedMesh.LoadTexture(openGLControl);
+            }
+        }
+
         // UNDONE : Wycinanie tekstury z zaznaczonego obszaru ze zdjęcia
         [OnCommand("LeftClickOnImage")]
         public void LeftClickOnImage(Canvas canvas)
@@ -97,18 +107,14 @@ namespace Reconstruction3D.ViewModels
                 CurrentPoint = Mouse.GetPosition(canvas);
                 PointsToAdd.Add(CurrentPoint);
 
-                var ellipse = new Ellipse()
+                thumb = new Thumb()
                 {
-                    Fill = Brushes.Black,
-                    Width = 4,
-                    Height = 4,
-                    StrokeThickness = 1
+                    
                 };
+                canvas.Children.Add(thumb);
 
-                canvas.Children.Add(ellipse);
-
-                Canvas.SetLeft(ellipse, CurrentPoint.X);
-                Canvas.SetTop(ellipse, CurrentPoint.Y);
+                Canvas.SetLeft(thumb, CurrentPoint.X);
+                Canvas.SetTop(thumb, CurrentPoint.Y);
 
                 if (PointsToAdd.Count > 1)
                 {
@@ -142,7 +148,15 @@ namespace Reconstruction3D.ViewModels
                     //bitmap.Save("C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
                     i = -1;
                 }
+
+                thumb.DragDelta += Thumb_DragDelta;
             }
+        }
+
+        private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            Canvas.SetLeft(thumb, Canvas.GetLeft(thumb) + e.HorizontalChange);
+            Canvas.SetTop(thumb, Canvas.GetTop(thumb) + e.VerticalChange);            
         }
 
         [OnCommand("CreateMesh")]
@@ -150,7 +164,7 @@ namespace Reconstruction3D.ViewModels
         {
             if (PointsToAdd.Count == 4)
             {
-                Meshes.Add(new Mesh(openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), new Transformation(), TexturePath));
+                Meshes.Add(new Mesh(openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), new Transformation(), new SharpGL.SceneGraph.Assets.Texture()));
                 i = -1;
             }
         }
@@ -220,7 +234,7 @@ namespace Reconstruction3D.ViewModels
             if (Mouse.LeftButton == MouseButtonState.Pressed && EditMode == false && openGLControl.IsMouseOver)
             {
                 
-                openGL.Rotate((float)Mouse.GetPosition(openGLControl).X, (float)Mouse.GetPosition(openGLControl).Y, 0);
+                openGL.Rotate((float)Mouse.GetPosition(openGLControl).Y, (float)Mouse.GetPosition(openGLControl).X, 0);
             }
         }
 

@@ -3,6 +3,8 @@ using SharpGL.SceneGraph.Assets;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -14,18 +16,19 @@ namespace Reconstruction3D.Models
         public string Type { get; set; }
         public List<Point> Points { get; set; }
         public Transformation Transformation { get; set; }
-        public Texture Texture { get; set; }
+        private Texture Texture { get; set; }
+        private string TexturePath { get; set; } = "C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
 
-        public Mesh(OpenGL openGL, string name, string type, List<Point> points, Transformation transformation, string texturePath)
+        public Mesh(OpenGL openGL, string name, string type, List<Point> points, Transformation transformation, Texture texture)
         {
             openGL.Enable(OpenGL.GL_TEXTURE_2D);
-            
+
             Name = name;
             Type = type;
             Points = points;
             Transformation = transformation;
-            Texture = new Texture();
-            Texture.Create(openGL, texturePath);
+            Texture = texture;
+            Texture.Create(openGL, TexturePath);
             Texture.Bind(openGL);
         }
 
@@ -69,22 +72,19 @@ namespace Reconstruction3D.Models
             openGL.End();
 
             openGL.Flush();
-            
+
         }
         public void RedrawOnImage(Canvas canvas)
         {
             for (int i = 0; i < Points.Count; i++)
             {
-                var ellipse = new Ellipse()
+                var thumb = new Thumb()
                 {
-                    Fill = Brushes.Black,
-                    Width = 4,
-                    Height = 4,
-                    StrokeThickness = 1
+
                 };
-                canvas.Children.Add(ellipse);
-                Canvas.SetLeft(ellipse, Points[i].X);
-                Canvas.SetTop(ellipse, Points[i].Y);
+                canvas.Children.Add(thumb);
+                Canvas.SetLeft(thumb, Points[i].X);
+                Canvas.SetTop(thumb, Points[i].Y);
                 if (i < 3)
                 {
                     var line = new Line()
@@ -116,6 +116,17 @@ namespace Reconstruction3D.Models
         public void RedrawOnImageCorrection(Canvas canvas)
         {
 
+        }
+
+        public void LoadTexture(SharpGL.WPF.OpenGLControl openGLControl)
+        {
+            var openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Texture.Destroy(openGLControl.OpenGL);
+                Texture.Create(openGLControl.OpenGL, openFileDialog.FileName);
+            }
         }
     }
 }

@@ -10,6 +10,10 @@
 
     <controls:MetroWindow.Resources>
         <vm:Commands x:Key="Commands"/>
+
+        <ControlTemplate x:Key="template1">
+            <Ellipse Width="5" Height="5" Fill="Black"/>
+        </ControlTemplate>
     </controls:MetroWindow.Resources>
 
     <Grid DataContext="{StaticResource ResourceKey=Commands}">
@@ -76,6 +80,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Image>
+                <!--<Thumb Name="myThumb" DragDelta="onDragDelta" Canvas.Left="0" Canvas.Top="0" Template="{StaticResource template1}"/>-->
             </Canvas>
         </Border>
         <Label Content="Type" Margin="159,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
@@ -83,6 +88,9 @@
         <Label Content="Name" Margin="314,0,0,136" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         <TextBox Text="{Binding MeshName}" TextWrapping="Wrap" Margin="356,0,0,136" Width="120" Height="23" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         <Button Command="{Binding CreateMesh}" CommandParameter="{Binding ElementName=canvas}" Content="Create Mesh" Margin="374,0,0,106" Width="88" Height="24" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
+        <Button Command="{Binding LoadTexture}" CommandParameter="{Binding ElementName=openGLControl}" Content="Load Texture" Margin="121,337,0,0" Width="85" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
 
         <GridSplitter Background="LightBlue" Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
