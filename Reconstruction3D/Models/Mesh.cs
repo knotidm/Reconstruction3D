@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -29,15 +28,16 @@ namespace Reconstruction3D.Models
             Transformation = transformation;
             Texture = new Texture();
             TexturePath = texturePath;
-            Texture.Create(openGL, TexturePath);
-            Texture.Bind(openGL);
+            
         }
 
         public void DrawMesh(OpenGL openGL)
         {
+            openGL.PushMatrix();
             openGL.Translate(Transformation.TranslateX * 0.05, Transformation.TranslateY * 0.05, Transformation.TranslateZ * 0.05);
             openGL.Rotate(Transformation.RotateX, Transformation.RotateY, Transformation.RotateZ);
-
+            Texture.Create(openGL, TexturePath);
+            Texture.Bind(openGL);
             openGL.Begin(OpenGL.GL_QUADS);
             // Front Face
             openGL.TexCoord(0.0f, 0.0f); openGL.Vertex(Points[0].X * 0.01, Points[0].Y * 0.01, Transformation.Depth * 0.01); // Bottom Left Of The Texture and Quad
@@ -73,7 +73,7 @@ namespace Reconstruction3D.Models
             openGL.End();
 
             openGL.Flush();
-
+            openGL.PopMatrix();
         }
         public void RedrawOnImage(Canvas canvas)
         {

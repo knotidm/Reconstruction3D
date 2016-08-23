@@ -90,7 +90,7 @@ namespace Reconstruction3D.ViewModels
             var openFileDialog = new OpenFileDialog();
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {                
+            {
                 TexturePath = openFileDialog.FileName;
             }
         }
@@ -108,16 +108,17 @@ namespace Reconstruction3D.ViewModels
             if (Mouse.LeftButton == MouseButtonState.Pressed && PointsToAdd.Count < 4)
             {
                 CurrentPoint = Mouse.GetPosition(canvas);
-                PointsToAdd.Add(CurrentPoint);
+                thumb = new Thumb();
 
-                thumb = new Thumb()
-                {
-                    
-                };
                 canvas.Children.Add(thumb);
 
                 Canvas.SetLeft(thumb, CurrentPoint.X);
                 Canvas.SetTop(thumb, CurrentPoint.Y);
+
+
+                PointsToAdd.Add(CurrentPoint);
+
+                thumb.DragDelta += Thumb_DragDelta;
 
                 if (PointsToAdd.Count > 1)
                 {
@@ -151,15 +152,15 @@ namespace Reconstruction3D.ViewModels
                     //bitmap.Save("C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
                     i = -1;
                 }
-
-                thumb.DragDelta += Thumb_DragDelta;
             }
         }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            Canvas.SetLeft(thumb, Canvas.GetLeft(thumb) + e.HorizontalChange);
-            Canvas.SetTop(thumb, Canvas.GetTop(thumb) + e.VerticalChange);            
+            CurrentPoint = new Point(Canvas.GetLeft(thumb) + e.HorizontalChange, Canvas.GetTop(thumb) + e.VerticalChange);
+
+            Canvas.SetLeft(thumb, CurrentPoint.X);
+            Canvas.SetTop(thumb, CurrentPoint.Y);
         }
 
         [OnCommand("CreateMesh")]
@@ -237,7 +238,6 @@ namespace Reconstruction3D.ViewModels
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed && EditMode == false && openGLControl.IsMouseOver)
             {
-                
                 openGL.Rotate((float)Mouse.GetPosition(openGLControl).Y, (float)Mouse.GetPosition(openGLControl).X, 0);
             }
         }

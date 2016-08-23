@@ -10,10 +10,6 @@
 
     <controls:MetroWindow.Resources>
         <vm:Commands x:Key="Commands"/>
-
-        <ControlTemplate x:Key="template1">
-            <Ellipse Width="5" Height="5" Fill="Black"/>
-        </ControlTemplate>
     </controls:MetroWindow.Resources>
 
     <Grid DataContext="{StaticResource ResourceKey=Commands}">
