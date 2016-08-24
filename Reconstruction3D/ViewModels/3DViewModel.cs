@@ -1,9 +1,9 @@
 ﻿using Commander;
 using PropertyChanged;
-using SharpGL;
 using SharpGL.Enumerations;
 using SharpGL.SceneGraph.Core;
 using SharpGL.SceneGraph.Primitives;
+using SharpGL.WPF;
 using System.Collections.ObjectModel;
 
 namespace Reconstruction3D.ViewModels
@@ -11,25 +11,24 @@ namespace Reconstruction3D.ViewModels
     [ImplementPropertyChanged]
     class _3DViewModel
     {
-        #region Mesh Properties
-
-        SharpGL.OpenGL openGL { get; set; }
+        public static SharpGL.OpenGL openGL { get; set; }
         public ObservableCollection<string> RenderModes { get; set; }
         public string SelectedRenderMode { get; set; }
         public bool DrawAll { get; set; }
         public bool EditMode { get; set; }
-        public float TranslateX { get; set; }
-        public float TranslateY { get; set; }
-        public float TranslateZ { get; set; }
-        public float RotateX { get; set; }
-        public float RotateY { get; set; }
-        public float RotateZ { get; set; }
-        public float Depth { get; set; }
+        public static float TranslateX { get; set; }
+        public static float TranslateY { get; set; }
+        public static float TranslateZ { get; set; }
+        public static float RotateX { get; set; }
+        public static float RotateY { get; set; }
+        public static float RotateZ { get; set; }
+        public static float Depth { get; set; }
 
-        #endregion
-
-
-        #region Mesh Commands
+        public _3DViewModel()
+        {
+            openGL = new SharpGL.OpenGL();
+            RenderModes = new ObservableCollection<string> { "Retained Mode", "Immediate Mode" };
+        }
 
         [OnCommand("Init")]
         public void Init(OpenGLControl openGLControl)
@@ -57,7 +56,6 @@ namespace Reconstruction3D.ViewModels
 
         }
 
-        #region Methods
         public void ChangeRenderMode(SharpGL.OpenGL openGL)
         {
             switch (SelectedRenderMode)
@@ -83,21 +81,14 @@ namespace Reconstruction3D.ViewModels
             {
                 foreach (var mesh in MainWindowViewModel.Meshes)
                 {
-                    mesh.DrawMesh(openGL);
-                    //mesh.Transformation.TranslateX = TranslateX;
-                    //mesh.Transformation.TranslateY = TranslateY;
-                    //mesh.Transformation.TranslateZ = TranslateZ;
-                    //mesh.Transformation.RotateX = RotateX;
-                    //mesh.Transformation.RotateY = RotateY;
-                    //mesh.Transformation.RotateZ = RotateZ;
-                    //mesh.Transformation.Depth = Depth;
+                    mesh.Draw(openGL);
                 }
             }
             else
             {
                 if (MainWindowViewModel.SelectedMesh != null)
                 {
-                    MainWindowViewModel.SelectedMesh.DrawMesh(openGL);
+                    MainWindowViewModel.SelectedMesh.Draw(openGL);
                     MainWindowViewModel.SelectedMesh.Transformation.TranslateX = TranslateX;
                     MainWindowViewModel.SelectedMesh.Transformation.TranslateY = TranslateY;
                     MainWindowViewModel.SelectedMesh.Transformation.TranslateZ = TranslateZ;
@@ -115,10 +106,5 @@ namespace Reconstruction3D.ViewModels
             RenderRetainedMode(openGL);
             openGL.PopAttrib();
         }
-
-        #endregion
-
-        #endregion
-
     }
 }

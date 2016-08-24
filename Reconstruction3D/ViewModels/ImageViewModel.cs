@@ -15,24 +15,20 @@ namespace Reconstruction3D.ViewModels
     [ImplementPropertyChanged]
     public class ImageViewModel
     {
-
-        #region Image Properties
-
         public string ImagePath { get; set; }
         public Visibility ImageInfo { get; set; }
         public Point CurrentPoint { get; set; }
         public List<Point> PointsToAdd { get; set; }
-        public ObservableCollection<Mesh> Meshes { get; set; }
-        public Mesh SelectedMesh { get; set; }
         public string MeshName { get; set; }
         public ObservableCollection<string> MeshTypes { get; set; }
         public string SelectedMeshType { get; set; }
-        public string TexturePath { get; set; } = "D:/Visual Studio/Reconstruction3D/Reconstruction3D/Textures/Crate.bmp";
 
-        #endregion
-
-
-        #region Image Commands
+        public ImageViewModel()
+        {
+            ImageInfo = Visibility.Hidden;
+            PointsToAdd = new List<Point>();
+            MeshTypes = new ObservableCollection<string> { "Tylne Oparcie", "Boczne Oparcie", "Siedzenie", "Noga" };
+        }
 
         [OnCommand("LoadImage")]
         public void LoadImage()
@@ -118,46 +114,9 @@ namespace Reconstruction3D.ViewModels
         {
             if (PointsToAdd.Count == 4)
             {
-                Meshes.Add(new Mesh(MainWindowViewModel.openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), new Transformation(), TexturePath));
+                MainWindowViewModel.Meshes.Add(new Mesh(_3DViewModel.openGL, MeshName, SelectedMeshType, new List<Point>(PointsToAdd), new Transformation(), MainWindowViewModel.TexturePath));
                 MainWindowViewModel.i = -1;
             }
         }
-
-        [OnCommand("RedrawOnImage")]
-        public void RedrawOnImage(Canvas canvas)
-        {
-            try
-            {
-                TranslateX = SelectedMesh.Transformation.TranslateX;
-                TranslateY = SelectedMesh.Transformation.TranslateY;
-                TranslateZ = SelectedMesh.Transformation.TranslateZ;
-                RotateX = SelectedMesh.Transformation.RotateX;
-                RotateY = SelectedMesh.Transformation.RotateY;
-                RotateZ = SelectedMesh.Transformation.RotateZ;
-                Depth = SelectedMesh.Transformation.Depth;
-                canvas.Children.RemoveRange(1, 9);
-                SelectedMesh.RedrawOnImage(canvas);
-                MainWindowViewModel.i = -1;
-            }
-            catch (System.Exception)
-            {
-
-            }
-        }
-
-        [OnCommand("AddSelectedMesh")]
-        public void AddSelectedMesh()
-        {
-            Meshes.Add(SelectedMesh);
-        }
-
-        [OnCommand("DeleteSelectedMesh")]
-        public void DeleteSelectedMesh()
-        {
-            Meshes.Remove(SelectedMesh);
-        }
-
-        #endregion
-
     }
 }

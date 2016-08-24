@@ -31,7 +31,7 @@ namespace Reconstruction3D.Models
             
         }
 
-        public void DrawMesh(OpenGL openGL)
+        public void Draw(OpenGL openGL)
         {
             openGL.PushMatrix();
             openGL.Translate(Transformation.TranslateX * 0.05, Transformation.TranslateY * 0.05, Transformation.TranslateZ * 0.05);
@@ -113,10 +113,5 @@ namespace Reconstruction3D.Models
             }
         }
 
-        //TODO: Metoda do korekcji zaznaczonego obszaru na zdjęciu
-        public void RedrawOnImageCorrection(Canvas canvas)
-        {
-
-        }
     }
 }

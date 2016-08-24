@@ -6,7 +6,11 @@
              xmlns:vm="clr-namespace:Reconstruction3D.ViewModels"
              xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
              Height="500" Width="1200">
-    <Grid>
+    <UserControl.Resources>
+        <vm:_3DViewModel x:Key="_3DViewModel"/>
+    </UserControl.Resources>
+
+    <Grid DataContext="{StaticResource ResourceKey=_3DViewModel}">
         <Label Content="Render Mode"  Margin="5,6,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <ComboBox ItemsSource="{Binding RenderModes}" SelectedItem="{Binding SelectedRenderMode}"  Margin="92,6,0,0" Width="120" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Top"/>
         <CheckBox IsChecked="{Binding DrawAll}" Content="Draw All Shapes"  Margin="240,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>

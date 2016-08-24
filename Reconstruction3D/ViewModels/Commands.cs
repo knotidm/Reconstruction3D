@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using SharpGL.WPF;
 using System.Windows.Controls.Primitives;
-using SharpGL.SceneGraph.Assets;
 
 namespace Reconstruction3D.ViewModels
 {
@@ -60,7 +59,7 @@ namespace Reconstruction3D.ViewModels
         {
             openGL = new SharpGL.OpenGL();
             RenderModes = new ObservableCollection<string> { "Retained Mode", "Immediate Mode" };
-            MeshTypes = new ObservableCollection<string> { "Tylne Oparcie", "Boczne Oparcie", "Siedzenie" };
+            MeshTypes = new ObservableCollection<string> { "Tylne Oparcie", "Boczne Oparcie", "Siedzenie", "Noga" };
             Meshes = new ObservableCollection<Mesh>();
             ImageInfo = Visibility.Hidden;
             PointsToAdd = new List<Point>();
@@ -236,9 +235,9 @@ namespace Reconstruction3D.ViewModels
         [OnCommand("GlobalRotate")]
         public void GlobalRotate(OpenGLControl openGLControl)
         {
-            if (Mouse.LeftButton == MouseButtonState.Pressed && EditMode == false && openGLControl.IsMouseOver)
+            if (Mouse.LeftButton == MouseButtonState.Pressed && openGLControl.IsMouseOver)
             {
-                openGL.Rotate((float)Mouse.GetPosition(openGLControl).Y, (float)Mouse.GetPosition(openGLControl).X, 0);
+                openGL.Rotate(120 - (float)Mouse.GetPosition(openGLControl).Y, 180 - (float)Mouse.GetPosition(openGLControl).X, 0);
             }
         }
 
@@ -275,21 +274,14 @@ namespace Reconstruction3D.ViewModels
             {
                 foreach (var mesh in Meshes)
                 {
-                    mesh.DrawMesh(openGL);
-                    //mesh.Transformation.TranslateX = TranslateX;
-                    //mesh.Transformation.TranslateY = TranslateY;
-                    //mesh.Transformation.TranslateZ = TranslateZ;
-                    //mesh.Transformation.RotateX = RotateX;
-                    //mesh.Transformation.RotateY = RotateY;
-                    //mesh.Transformation.RotateZ = RotateZ;
-                    //mesh.Transformation.Depth = Depth;
+                    mesh.Draw(openGL);
                 }
             }
             else
             {
                 if (SelectedMesh != null)
                 {
-                    SelectedMesh.DrawMesh(openGL);
+                    SelectedMesh.Draw(openGL);
                     SelectedMesh.Transformation.TranslateX = TranslateX;
                     SelectedMesh.Transformation.TranslateY = TranslateY;
                     SelectedMesh.Transformation.TranslateZ = TranslateZ;
