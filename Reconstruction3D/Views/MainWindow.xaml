@@ -50,7 +50,7 @@
                 </i:Interaction.Triggers>
             </DataGrid>
         </Border>
-        <Button Command="{Binding AddSelectedMesh}" Content="'{'" FontFamily="/Reconstruction3D;component/Fonts/#Sosa" Margin="16,270,0,0" Width="28" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25"/>
+        <Button Command="{Binding CopySelectedMesh}" Content="'{'" FontFamily="/Reconstruction3D;component/Fonts/#Sosa" Margin="16,270,0,0" Width="28" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25"/>
         <Button Command="{Binding DeleteSelectedMesh}" Content="~" FontFamily="/Reconstruction3D;component/Fonts/#Sosa" Margin="61,270,0,0" Width="28" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25"/>
         <Button Command="{Binding LoadTexture}" Content="Load Texture" Margin="20,307,0,0" Width="85" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Image Source="{Binding TexturePath}" HorizontalAlignment="Left" Height="100" Margin="20,338,0,0" VerticalAlignment="Top" Width="100"/>
@@ -108,7 +108,7 @@
             </i:Interaction.Triggers>
         </sharpGL:OpenGLControl>
 
-        <Button Command="{Binding FacesToMesh}" Content="Confirm Faces / Set Mesh" Grid.Column="2" Margin="145,0,0,106" Width="182" Height="24" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Button Command="{Binding ExportToOBJ}" Content="Export To OBJ" Grid.Column="2" Margin="145,0,0,106" Width="182" Height="24" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 
         <CheckBox IsChecked="{Binding EditMode}" Content="Edit Mode" Grid.Column="2" Margin="0,42,53,0" Width="79" Height="18" HorizontalAlignment="Right" VerticalAlignment="Top" />
         <Label Content="Axis" Grid.Column="2" Margin="0,73,159,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>

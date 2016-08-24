@@ -17,7 +17,7 @@ using System.Windows.Controls.Primitives;
 
 namespace Reconstruction3D.ViewModels
 {
-    //TODO: Undo / Redo Frmaweork
+    //TODO: Undo / Redo Frmaweork, Save Option
     [ImplementPropertyChanged]
     public class Commands
     {
@@ -195,10 +195,11 @@ namespace Reconstruction3D.ViewModels
             }
         }
 
-        [OnCommand("AddSelectedMesh")]
-        public void AddSelectedMesh()
+        [OnCommand("CopySelectedMesh")]
+        public void CopySelectedMesh()
         {
-            Meshes.Add(SelectedMesh);
+            var newMesh = new Mesh(openGL, SelectedMesh.Name, SelectedMesh.Type, new List<Point>(SelectedMesh.Points), new Transformation(), TexturePath);
+            Meshes.Add(newMesh);
         }
 
         [OnCommand("DeleteSelectedMesh")]
@@ -241,9 +242,9 @@ namespace Reconstruction3D.ViewModels
             }
         }
 
-        // TODO: FacesToMesh
-        [OnCommand("FacesToMesh")]
-        public void FacesToMesh()
+        // TODO: ExportToOBJ
+        [OnCommand("ExportToOBJ")]
+        public void ExportToOBJ()
         {
 
         }
@@ -265,6 +266,18 @@ namespace Reconstruction3D.ViewModels
                     }
             }
         }
+        public void EditMesh()
+        {
+            SelectedMesh.Transformation.TranslateX = TranslateX;
+            SelectedMesh.Transformation.TranslateY = TranslateY;
+            SelectedMesh.Transformation.TranslateZ = TranslateZ;
+            SelectedMesh.Transformation.RotateX = RotateX;
+            SelectedMesh.Transformation.RotateY = RotateY;
+            SelectedMesh.Transformation.RotateZ = RotateZ;
+            SelectedMesh.Transformation.Depth = Depth;
+            SelectedMesh.TexturePath = TexturePath;
+        }
+
         public void RenderRetainedMode(SharpGL.OpenGL openGL)
         {
             var axies = new Axies();
@@ -276,20 +289,17 @@ namespace Reconstruction3D.ViewModels
                 {
                     mesh.Draw(openGL);
                 }
+                if (SelectedMesh != null)
+                {
+                    EditMesh();
+                }
             }
             else
             {
                 if (SelectedMesh != null)
                 {
                     SelectedMesh.Draw(openGL);
-                    SelectedMesh.Transformation.TranslateX = TranslateX;
-                    SelectedMesh.Transformation.TranslateY = TranslateY;
-                    SelectedMesh.Transformation.TranslateZ = TranslateZ;
-                    SelectedMesh.Transformation.RotateX = RotateX;
-                    SelectedMesh.Transformation.RotateY = RotateY;
-                    SelectedMesh.Transformation.RotateZ = RotateZ;
-                    SelectedMesh.Transformation.Depth = Depth;
-                    SelectedMesh.TexturePath = TexturePath;
+                    EditMesh();
                 }
             }
         }
