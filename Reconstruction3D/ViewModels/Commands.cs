@@ -17,7 +17,7 @@ using System.Windows.Controls.Primitives;
 
 namespace Reconstruction3D.ViewModels
 {
-    //TODO: Undo / Redo Frmaweork, Save Option
+    //TODO: Undo / Redo Framework, Save Option [SQL Database]
     [ImplementPropertyChanged]
     public class Commands
     {
@@ -94,7 +94,7 @@ namespace Reconstruction3D.ViewModels
             }
         }
 
-        // UNDONE : Wycinanie tekstury z zaznaczonego obszaru ze zdjęcia
+        // UNDONE : Wycinanie tekstury dopasowującej się do zaznaczonego (modyfikowalnego) obszaru ze zdjęcia
         [OnCommand("LeftClickOnImage")]
         public void LeftClickOnImage(Canvas canvas)
         {
@@ -146,7 +146,6 @@ namespace Reconstruction3D.ViewModels
 
                     canvas.Children.Add(line);
 
-                    // TODO: Zrobić żeby szerokość i wysokość tekstury same dopasowywały się do wycinanego obszaru
                     //var bitmap = CreateTexture.CropImage(CurrentPoint, ImagePath);
                     //bitmap.Save("C:/VISUAL STUDIO PROJECTS/Reconstruction3D/Reconstruction3D/Textures/Crate2.bmp");
                     i = -1;
@@ -242,7 +241,7 @@ namespace Reconstruction3D.ViewModels
             }
         }
 
-        // TODO: ExportToOBJ
+        // TODO: Export To .obj with .mtl
         [OnCommand("ExportToOBJ")]
         public void ExportToOBJ()
         {

@@ -9,6 +9,8 @@ using System.Windows.Shapes;
 
 namespace Reconstruction3D.Models
 {
+    // TODO: Metoda Smooth pozwalająca na wygładzanie krawędzi
+    // TODO: Metoda Bulge pozwalająca na wypukłość ściany
     public class Mesh
     {
         public string Name { get; set; }
