@@ -17,7 +17,8 @@ using System.Windows.Controls.Primitives;
 
 namespace Reconstruction3D.ViewModels
 {
-    //TODO: Undo / Redo Framework, Save Option [SQL Database]
+    //TODO: Undo / Redo Framework
+    //TODO: Save Option [SQL Database]
     [ImplementPropertyChanged]
     public class Commands
     {
@@ -94,7 +95,7 @@ namespace Reconstruction3D.ViewModels
             }
         }
 
-        // UNDONE : Wycinanie tekstury dopasowującej się do zaznaczonego (modyfikowalnego) obszaru ze zdjęcia
+        // UNDONE : Wycinanie tekstury dopasowującej się do zaznaczonego (modyfikowalnego) obszaru ze zdjęcia (Tekstura musi się tworzyć jako nowy plik)
         [OnCommand("LeftClickOnImage")]
         public void LeftClickOnImage(Canvas canvas)
         {

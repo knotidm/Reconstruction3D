@@ -114,6 +114,5 @@ namespace Reconstruction3D.Models
                 }
             }
         }
-
     }
 }

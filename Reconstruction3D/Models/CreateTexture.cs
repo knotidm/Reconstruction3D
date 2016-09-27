@@ -4,7 +4,6 @@ namespace Reconstruction3D.Models
 {
     public class CreateTexture
     {
-        // TODO: Tekstury muszą się tworzyć jako nowe kolejene pliki każdorazwowo
         public static Bitmap CropImage(System.Windows.Point location, string sourcePath)
         {
             Rectangle rectangle = new Rectangle((int)location.X, (int)location.Y, 256, 256);
