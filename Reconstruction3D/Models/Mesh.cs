@@ -29,8 +29,7 @@ namespace Reconstruction3D.Models
             Points = points;
             Transformation = transformation;
             Texture = new Texture();
-            TexturePath = texturePath;
-            
+            TexturePath = texturePath;           
         }
 
         public void Draw(OpenGL openGL)
